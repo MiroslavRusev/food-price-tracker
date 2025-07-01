@@ -1,39 +1,73 @@
-# sv
+# Food Price Tracker
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A modern web application for tracking and visualizing food prices over time. Built with SvelteKit, TypeScript, and Chart.js.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+-  Interactive price charts with multiple time ranges (30 days to 10 years)
+-  Track various food items including flour, cooking oil, sugar, vegetables, meat, and dairy
+-  Responsive design with Tailwind CSS
+-  Fast and lightweight SvelteKit application
+-  Beautiful UI with smooth animations
 
+## Tech Stack
+
+- **Frontend**: SvelteKit 5, TypeScript
+- **Styling**: Tailwind CSS
+- **Charts**: Chart.js with svelte5-chartjs
+- **Build Tool**: Vite
+- **Package Manager**: Yarn
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- Yarn package manager
+
+### Installation
+
+1. Clone the repository:
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+git clone <repository-url>
+cd svetle
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
+2. Install dependencies:
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+yarn install
 ```
 
-## Building
-
-To create a production version of your app:
-
+3. Start the development server:
 ```bash
-npm run build
+yarn dev
 ```
 
-You can preview the production build with `npm run preview`.
+4. Open your browser and navigate to `http://localhost:5173`
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-# food-price-tracker
+## Available Scripts
+
+- `yarn dev` - Start development server
+- `yarn build` - Build for production
+- `yarn preview` - Preview production build
+- `yarn check` - Type check the project
+- `yarn lint` - Run ESLint and Prettier
+- `yarn format` - Format code with Prettier
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable Svelte components
+│   ├── chart.svelte    # Chart.js integration
+│   ├── dataRange.svelte # Time range selector
+│   └── foodItems.svelte # Food item selector
+├── lib/
+│   └── data.ts         # Data models and chart generation
+├── routes/             # SvelteKit pages
+└── styles/             # Global styles
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
