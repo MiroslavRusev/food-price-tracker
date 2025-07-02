@@ -1,9 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Chart from '../components/chart.svelte';
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
 	import { getChartData } from '$lib/data';
-	
+	import { fetchData } from '$lib/dataFetcher';
+
+	onMount(() => {
+		fetchData();
+	});
+
 	const defaults = {
 		range: '30days',
 		foods: ['flour']
@@ -15,10 +21,10 @@
 	$: chartData = getChartData(selectedRange, selectedFoods);
 	
 	function resetToDefaults() {
-    if (selectedRange !== defaults.range || selectedFoods !== defaults.foods) {
-		selectedRange = defaults.range;
-		selectedFoods = defaults.foods;
-    } 
+		if (selectedRange !== defaults.range || selectedFoods !== defaults.foods) {
+			selectedRange = defaults.range;
+			selectedFoods = defaults.foods;
+		} 
 	}
 
 </script>
