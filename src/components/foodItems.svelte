@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { foodItems } from '$lib/data';
+	import type { FoodItem } from '$lib/interfaces';
 	
-	export let selectedFoods: string[] = ['apple'];
+	export let foodItems: FoodItem[] = [];
+	export let selectedFoods: string[] = [];
 	
 	function handleFoodSelect(foodId: string) {
 		if (selectedFoods.includes(foodId)) {

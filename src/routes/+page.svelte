@@ -3,22 +3,57 @@
 	import Chart from '../components/chart.svelte';
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
-	import { getChartData } from '$lib/data';
-	import { fetchData } from '$lib/dataFetcher';
+	import { getChartData, getFoodItems } from '$lib/dataFetcher';
+	import type { FoodItem, ChartData } from '$lib/interfaces';
 
-	onMount(() => {
-		fetchData();
-	});
-
+	let loading = true;
+	let error = false;
+	let foodItems: FoodItem[] = [];
+	
 	const defaults = {
-		range: '30days',
-		foods: ['flour']
+		range: '3months',
+		foods: ['bread']
 	};
 	
 	let selectedRange = defaults.range;
 	let selectedFoods = defaults.foods;
+	let chartData: ChartData = { labels: [], datasets: [] };
 	
-	$: chartData = getChartData(selectedRange, selectedFoods);
+	onMount(async () => {
+		try {
+			loading = true;
+			// Load food items first
+			foodItems = await getFoodItems();
+			
+			// Set default selection to first available food if bread is not available
+			if (foodItems.length > 0 && !foodItems.find(f => f.id === 'bread')) {
+				selectedFoods = [foodItems[0].id];
+			}
+			
+			// Load initial chart data
+			chartData = await getChartData(selectedRange, selectedFoods);
+		} catch (err) {
+			console.error('Error loading data:', err);
+			error = true;
+		} finally {
+			loading = false;
+		}
+	});
+	
+	// Reactive statement to update chart data when selections change
+	$: if (!loading && foodItems.length > 0) {
+		selectedRange, selectedFoods; // Explicitly reference the variables to watch
+		updateChartData();
+	}
+	
+	async function updateChartData() {
+		try {
+			chartData = await getChartData(selectedRange, selectedFoods);
+		} catch (err) {
+			console.error('Error updating chart data:', err);
+			error = true;
+		}
+	}
 	
 	function resetToDefaults() {
 		if (selectedRange !== defaults.range || selectedFoods !== defaults.foods) {
@@ -50,25 +85,44 @@
 	</div>
 </header>
 
-<section class="mx-auto max-w-5xl text-center mb-8">
-	<h2 class="text-xl font-semibold mb-4">Food Prices Over Time</h2>
-	<!-- Chart placeholder -->
-	<div
-		id="chart"
-		class="h-72 bg-blue-50 rounded-lg flex items-center justify-center text-gray-400 text-lg mb-8"
-	>
-		<Chart data={chartData} />
+{#if loading}
+	<section class="mx-auto max-w-5xl text-center mb-8">
+		<div class="h-72 bg-blue-50 rounded-lg flex items-center justify-center">
+			<div class="text-gray-600">
+				<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+				<p>Loading food price data...</p>
+			</div>
+		</div>
+	</section>
+{:else if error}
+	<section class="mx-auto max-w-5xl text-center mb-8">
+		<div class="h-72 bg-red-50 rounded-lg flex items-center justify-center">
+			<div class="text-red-600">
+				<p class="text-lg font-semibold mb-2">Error loading data</p>
+				<p>Please try refreshing the page</p>
+			</div>
+		</div>
+	</section>
+{:else}
+	<section class="mx-auto max-w-5xl text-center mb-8">
+		<h2 class="text-xl font-semibold mb-4">Food Prices Over Time</h2>
+		<div
+			id="chart"
+			class="h-72 bg-blue-50 rounded-lg flex items-center justify-center text-gray-400 text-lg mb-8"
+		>
+			<Chart data={chartData} />
+		</div>
+	</section>
+
+	<DataRange bind:selectedRange />
+	<FoodItems {foodItems} bind:selectedFoods />
+
+	<div class="flex justify-center">
+		<button 
+			class="bg-pink-500 text-white p-4 border-2 m-4 rounded-lg shadow-lg hover:bg-pink-600 transition-colors"
+			on:click={resetToDefaults}
+		>
+			Reset to Defaults
+		</button>
 	</div>
-</section>
-
-<DataRange bind:selectedRange />
-<FoodItems bind:selectedFoods />
-
-<div class="flex justify-center">
-	<button 
-		class="bg-pink-500 text-white p-4 border-2 m-4 rounded-lg shadow-lg hover:bg-pink-600 transition-colors"
-		on:click={resetToDefaults}
-	>
-		Reset to Defaults
-	</button>
-</div>
+{/if}

@@ -1,18 +1,8 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
 import { BASE_API_URL } from '$env/static/private';
-
-const productCodes = {
-    bread: "CP01113",
-    pork: "CP01122",
-    poultry: "CP01124",
-    milk: "CP01141",
-    eggs: "CP01147",
-    oil: "CP0115",
-    butter: "CP01151",
-    potatoes: "CP01174",
-    sugar: "CP01181"
-};
+import { productCodes } from '$lib/constants';
+import { processEurostatData } from '$lib/dataProcessing';
+import type { RequestHandler } from '@sveltejs/kit';
 
 const generateYearMonthRange = (monthsBack: number): string => {
     const dates: string[] = [];
@@ -40,8 +30,9 @@ export const GET: RequestHandler = async () => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
-        return json(data);
+        const rawData = await response.json();
+        const structuredData = processEurostatData(rawData);
+        return json(structuredData);
     } catch (error) {
         console.error('Error fetching data:', error);
         return json({ error: 'Failed to fetch data' }, { status: 500 });
