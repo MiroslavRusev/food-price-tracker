@@ -1,7 +1,7 @@
 <script lang="ts">
 	// @ts-nocheck
 	import { Line } from 'svelte5-chartjs';
-	import type { ChartData } from '$lib/data';
+	import type { ChartData } from '$lib/dataFetcher';
 
 	import {
 		Chart as ChartJS,

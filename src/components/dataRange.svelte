@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { timeRanges } from '$lib/data';
+	import { timeRanges } from '$lib/constants';
 	
-	export let selectedRange = '30days';
+	export let selectedRange: string;
 	
 	function handleRangeSelect(rangeId: string) {
 		selectedRange = rangeId;
