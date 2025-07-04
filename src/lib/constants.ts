@@ -30,3 +30,10 @@ export const timeRanges = [
 	{ id: '5years', label: '5 years', period: 'years', length: 5 },
 	{ id: '10years', label: '10 years', period: 'years', length: 10 }
 ];
+
+export const formFields = [
+    { id: 'monthly-budget', label: 'Месечен бюджет', type: 'text' },
+    { id: 'food-expense', label: 'Разход храна', type: 'text' },
+    { id: 'fuel-expense', label: 'Разход гориво', type: 'text' },
+    { id: 'utility-expense', label: 'Разход ток и вода', type: 'text' }
+];

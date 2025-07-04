@@ -3,10 +3,11 @@
 	import Chart from '../components/chart.svelte';
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
+	import { selectedFoods, foodStore } from '$lib/stores';
 	import { getChartData, getFoodItems } from '$lib/dataFetcher';
 	import type { FoodItem, ChartData } from '$lib/interfaces';
 	import HeaderImage from "$lib/assets/header-image.webp";
-
+	import Form from '../components/Form.svelte';
 
 	let loading = true;
 	let error = false;
@@ -18,7 +19,6 @@
 	};
 	
 	let selectedRange = defaults.range;
-	let selectedFoods = defaults.foods;
 	let chartData: ChartData = { labels: [], datasets: [] };
 	
 	onMount(async () => {
@@ -29,11 +29,13 @@
 			
 			// Set default selection to first available food if bread is not available
 			if (foodItems.length > 0 && !foodItems.find(f => f.id === 'bread')) {
-				selectedFoods = [foodItems[0].id];
+				foodStore.set([foodItems[0].id]);
+			} else {
+				foodStore.set(defaults.foods);
 			}
 			
 			// Load initial chart data
-			chartData = await getChartData(selectedRange, selectedFoods);
+			chartData = await getChartData(selectedRange, $selectedFoods);
 		} catch (err) {
 			console.error('Error loading data:', err);
 			error = true;
@@ -44,13 +46,13 @@
 	
 	// Reactive statement to update chart data when selections change
 	$: if (!loading && foodItems.length > 0) {
-		selectedRange, selectedFoods; // Explicitly reference the variables to watch
+		selectedRange, $selectedFoods; // Watch the store value, not the store object
 		updateChartData();
 	}
 	
 	async function updateChartData() {
 		try {
-			chartData = await getChartData(selectedRange, selectedFoods);
+			chartData = await getChartData(selectedRange, $selectedFoods);
 		} catch (err) {
 			console.error('Error updating chart data:', err);
 			error = true;
@@ -58,9 +60,9 @@
 	}
 	
 	function resetToDefaults() {
-		if (selectedRange !== defaults.range || selectedFoods !== defaults.foods) {
+		if (selectedRange !== defaults.range || $selectedFoods.length !== defaults.foods.length || !defaults.foods.every(f => $selectedFoods.includes(f))) {
 			selectedRange = defaults.range;
-			selectedFoods = defaults.foods;
+			foodStore.set(defaults.foods);
 		} 
 	}
 
@@ -109,7 +111,7 @@
 			<div class="controls-overlap">
 				<div class="max-w-6xl mx-auto px-6 space-y-8">
 					<DataRange bind:selectedRange />
-					<FoodItems {foodItems} bind:selectedFoods />
+					<FoodItems {foodItems} />
 					
 					<div class="flex justify-center pt-4 pb-8">
 						<button 
@@ -126,4 +128,8 @@
 			</div>
 		{/if}
 	</div>
+	<div class="max-w-3xl mx-auto px-6">
+		<Form data={chartData}/>
+	</div>
+	
 </main>
