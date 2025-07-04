@@ -41,4 +41,15 @@ interface EurostatResponse {
 	value: Record<string, string>;
 }
 
-export type { FoodPriceData, ChartData, FoodItem, ApiResponse, EurostatResponse };
+// Type definitions for form calculation result
+interface FormCalculationResult {
+	monthlyBudget: number;
+	totalExpenses: number;
+	remainingBudget: number;
+	averagePriceChange: string;
+	newPurchasingPower: string;
+	purchasingPowerLoss: string;
+	chartData: ChartData;
+}
+
+export type { FoodPriceData, ChartData, FoodItem, ApiResponse, EurostatResponse, FormCalculationResult };
