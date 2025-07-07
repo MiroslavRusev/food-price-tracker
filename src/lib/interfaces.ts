@@ -44,12 +44,14 @@ interface EurostatResponse {
 // Type definitions for form calculation result
 interface FormCalculationResult {
 	monthlyBudget: number;
-	totalExpenses: number;
+	monthlyBudgetThen: number;
+	totalExpensesNow: number;
+	totalExpensesThen: number;
 	remainingBudget: number;
-	averagePriceChange: string;
-	newPurchasingPower: string;
-	purchasingPowerLoss: string;
-	chartData: ChartData;
+	remainingBudgetThen: number;
+	inflationRate: number;
+	netExpensesDifference: number;
+	previousSalaryValueMatchingCurrentPurchasingPower: number;
 }
 
 export type { FoodPriceData, ChartData, FoodItem, ApiResponse, EurostatResponse, FormCalculationResult };

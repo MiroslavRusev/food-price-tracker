@@ -32,8 +32,9 @@ export const timeRanges = [
 ];
 
 export const formFields = [
-    { id: 'monthly-budget', label: 'Месечен бюджет', type: 'text' },
-    { id: 'food-expense', label: 'Разход храна', type: 'text' },
-    { id: 'fuel-expense', label: 'Разход гориво', type: 'text' },
-    { id: 'utility-expense', label: 'Разход ток и вода', type: 'text' }
+    { id: 'monthly-budget-then', label: 'Месечен доход в началото на периода', type: 'text' , inputmode: 'numeric' },
+    { id: 'monthly-budget-now', label: 'Месечен доход към днешна дата', type: 'text' , inputmode: 'numeric' },
+    { id: 'food-expense', label: 'Разход храна към днешна дата', type: 'text' , inputmode: 'numeric' },
+    { id: 'fuel-expense', label: 'Разход гориво към днешна дата', type: 'text' , inputmode: 'numeric' },
+    { id: 'utility-expense', label: 'Разход ток и вода към днешна дата', type: 'text' , inputmode: 'numeric' }
 ];
