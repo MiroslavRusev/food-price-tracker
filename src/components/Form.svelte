@@ -52,13 +52,11 @@
 	function calculateInflationRate(data: ChartData) {
 		const numberOfDataPoints = data.datasets.length;
 		let percentageChanges: number[] = [];
-		console.log(data.datasets);
 		for (let i = 0; i < numberOfDataPoints; i++) {
 			const values = data.datasets[i].data;
 			// Calculate the delta between the last and first value (the value is in percentage)
 			percentageChanges.push((values[values.length - 1] - values[0]) / values[0]);
 		}
-		console.log(percentageChanges);
 		return percentageChanges;
 	}
 

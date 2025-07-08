@@ -21,17 +21,17 @@
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 			<div>
 				<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-					Food Price Tracker
+					Анализатор на потребителските цени
 				</h3>
 				<p class="text-white leading-relaxed">
-					Track food prices over time with our interactive charts and data analysis tools.
+					Анализирайте отношението на потребителските цени към доходите на база инфлацията в различни периоди.
 				</p>
 			</div>
 
 			{#if showQuickLinks}
 				<div>
 					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-						Quick Links
+						Източници
 					</h3>
 					<ul class="space-y-2">
 						{#if customLinks.length > 0}
@@ -43,9 +43,16 @@
 								</li>
 							{/each}
 						{:else}
-							<li><a href="/" class="text-white hover:text-black transition-colors">Home</a></li>
-							<li><a href="#" class="text-white hover:text-black transition-colors">About</a></li>
-							<li><a href="#" class="text-white hover:text-black transition-colors">Contact</a></li>
+							<li><a 
+								href="https://ec.europa.eu/eurostat/databrowser/view/prc_fsc_idx/default/table?lang=en&category=prc.prc_oth"
+								class="text-white hover:text-black transition-colors"
+								>Eurostat</a
+							></li>
+							<li>
+								<a href="https://fuelo.net/" class="text-white hover:text-black transition-colors"
+									>Fuelo</a
+								>
+							</li>
 						{/if}
 					</ul>
 				</div>
@@ -75,7 +82,7 @@
 			{/if}
 		</div>
 		<div class="border-t border-gray-200 mt-8 pt-8 text-center">
-			<p class="text-white">&copy; {getCurrentYear()} Food Price Tracker. All rights reserved.</p>
+			<p class="text-white">&copy; {getCurrentYear()} Анализатор на потребителските цени. Всички права запазени.</p>
 		</div>
 	</div>
 </footer>

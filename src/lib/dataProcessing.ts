@@ -1,8 +1,8 @@
 import { foodItems } from '$lib/constants';
-import type { ApiResponse, EurostatResponse } from '$lib/interfaces';
+import type { FoodApiResponse, EurostatResponse } from '$lib/interfaces';
 
 // Process Eurostat data into structured format
-export const processEurostatData = (rawData: unknown): ApiResponse => {
+export const processEurostatData = (rawData: unknown): FoodApiResponse => {
 	const dataset = rawData as EurostatResponse;
 	// Check if the data from API is valid
 	if (

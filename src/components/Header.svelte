@@ -6,7 +6,7 @@
 	<div class="header-content mx-auto px-6 py-1">
 		<div class="flex items-start justify-between">
 			<img src={Logo} alt="Logo" class="w-10 h-10 mr-4" />
-			<h1 class="flex-1 text-2xl font-bold text-white pt-1">Анализатор на покупателната сила</h1>
+			<h1 class="flex-1 text-2xl font-bold text-white pt-1">Анализатор на потребителските цени</h1>
 			<div class="flex-1 flex justify-end">
 				<a
 					id="fb-social-button"

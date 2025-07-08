@@ -16,11 +16,30 @@ interface FoodItem {
 	name: string;
 	color: string;
 }
-// Type definitions for the API response
-interface ApiResponse {
+
+// Type definitions for food API response
+interface FoodApiResponse {
 	foodItems: FoodItem[];
 	labels: string[];
 	priceData: { [key: string]: number[] };
+}
+
+// Type definitions for fuel API response
+interface FuelApiResponse {
+	fuelData: FuelData[];
+}
+
+// Type definitions for the fuel request object
+interface FuelRequest {
+	fuelType: string;
+	date: string;
+}
+
+interface FuelData {
+	fuel: string;
+	price: number;
+	dimension: string;
+	date: string;
 }
 
 // Type definitions for Eurostat API response
@@ -58,7 +77,10 @@ export type {
 	FoodPriceData,
 	ChartData,
 	FoodItem,
-	ApiResponse,
+	FoodApiResponse,
+	FuelApiResponse,
 	EurostatResponse,
-	FormCalculationResult
+	FormCalculationResult,
+	FuelRequest,
+	FuelData
 };

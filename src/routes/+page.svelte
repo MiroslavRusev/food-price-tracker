@@ -4,7 +4,7 @@
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
 	import { selectedFoods, foodStore } from '$lib/stores';
-	import { getChartData, getFoodItems } from '$lib/dataFetcher';
+	import { getChartData, getFoodItems } from '$lib/foodDataFetcher';
 	import type { FoodItem, ChartData } from '$lib/interfaces';
 	import HeaderImage from '$lib/assets/header-image.webp';
 	import Form from '../components/Form.svelte';
