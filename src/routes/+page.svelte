@@ -90,15 +90,8 @@
 			{:else if error}
 				<div class="flex items-center justify-center min-h-[400px]">
 					<div class="text-center">
-						<div
-							class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
-						>
-							<svg
-								class="w-8 h-8 text-red-600"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+						<div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+							<svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -115,9 +108,7 @@
 				<!-- Chart Section -->
 				<div class="p-8 mb-12">
 					<div class="text-center mb-8">
-						<h1 class="text-3xl font-bold text-white mb-2">
-							Хармонизиран индекс на потребителски цени
-						</h1>
+						<h1 class="text-3xl font-bold text-white mb-2">Хармонизиран индекс на потребителски цени</h1>
 						<p class="text-white text-lg">Index (базов) 2015=100</p>
 					</div>
 

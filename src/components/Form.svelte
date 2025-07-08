@@ -93,10 +93,7 @@
 	<p class="text-amber-600 underline text-base mt-2 mb-2">Избрани продукти: {productsString}</p>
 </div>
 <div class="space-y-6">
-	<form
-		on:submit={handleSubmit}
-		class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6"
-	>
+	<form on:submit={handleSubmit} class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6">
 		{#each formData as field}
 			{#if field.id.startsWith('monthly-budget')}
 				<label class="block">
@@ -222,8 +219,8 @@
 						<div class="bg-white p-3 rounded border">
 							<div class="font-medium text-gray-900">Нетна разлика в разходите към днешна дата</div>
 							<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
-								Положителна стойност означава, че разходите са се увеличили, а отрицателна означава,
-								че са се смалили.
+								Положителна стойност означава, че разходите са се увеличили, а отрицателна означава, че
+								са се смалили.
 							</div>
 							{#if result.netExpensesDifference > 0}
 								<div class="text-red-600 font-semibold">
@@ -241,27 +238,25 @@
 							Сравнение на покупателната сила на дохода в началото на периода и днешния доход
 						</div>
 						<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
-							Сумата, която изписва показва разликата в покупателната сила между днешния доход и
-							дохода в началото на периода. Базира се на потребителската кошница - избраните
-							продукти и разходи към днешна дата. Ако новата заплата изпреварва инфлацията, ще е
-							маркирана в зелено, ако изостава - в червено.
+							Сумата, която изписва показва разликата в покупателната сила между днешния доход и дохода в
+							началото на периода. Базира се на потребителската кошница - избраните продукти и разходи към
+							днешна дата. Ако новата заплата изпреварва инфлацията, ще е маркирана в зелено, ако изостава
+							- в червено.
 						</div>
 						<div class="text-slate-600 font-bold text-sm italic mt-2 mb-2">
-							Доход в началото на периода, който е със същата покупателна сила, като
-							днешния: {result.previousSalaryValueMatchingCurrentPurchasingPower.toFixed(2)} лв.
+							Доход в началото на периода, който е със същата покупателна сила, като днешния:
+							{result.previousSalaryValueMatchingCurrentPurchasingPower.toFixed(2)} лв.
 						</div>
 						{#if result.previousSalaryValueMatchingCurrentPurchasingPower > result.monthlyBudgetThen}
 							<div class="text-green-600 font-semibold border-2 border-green-600 rounded-md p-2 mb-2">
 								Новата заплата изпреварва инфлацията с {(
-									result.previousSalaryValueMatchingCurrentPurchasingPower -
-									result.monthlyBudgetThen
+									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
 								).toFixed(2)} лв.
 							</div>
 						{:else}
 							<div class="text-red-600 font-semibold border-2 border-red-600 rounded-md p-2 mb-2">
 								Новата заплата изостава спрямо инфлацията с {(
-									result.previousSalaryValueMatchingCurrentPurchasingPower -
-									result.monthlyBudgetThen
+									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
 								).toFixed(2)} лв.
 							</div>
 						{/if}

@@ -46,10 +46,10 @@ export const formFields = [
 		inputmode: 'numeric',
 		key: 'monthlyBudget'
 	},
-	{ 
-		id: 'food-expense', 
-		label: 'Разход храна към днешна дата', 
-		type: 'text', 
+	{
+		id: 'food-expense',
+		label: 'Разход храна към днешна дата',
+		type: 'text',
 		inputmode: 'numeric',
 		key: 'foodExpense'
 	},

@@ -30,9 +30,7 @@
 
 			{#if showQuickLinks}
 				<div>
-					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-						Източници
-					</h3>
+					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">Източници</h3>
 					<ul class="space-y-2">
 						{#if customLinks.length > 0}
 							{#each customLinks as link}
@@ -43,11 +41,12 @@
 								</li>
 							{/each}
 						{:else}
-							<li><a 
-								href="https://ec.europa.eu/eurostat/databrowser/view/prc_fsc_idx/default/table?lang=en&category=prc.prc_oth"
-								class="text-white hover:text-black transition-colors"
-								>Eurostat</a
-							></li>
+							<li>
+								<a
+									href="https://ec.europa.eu/eurostat/databrowser/view/prc_fsc_idx/default/table?lang=en&category=prc.prc_oth"
+									class="text-white hover:text-black transition-colors">Eurostat</a
+								>
+							</li>
 							<li>
 								<a href="https://fuelo.net/" class="text-white hover:text-black transition-colors"
 									>Fuelo</a
@@ -60,9 +59,7 @@
 
 			{#if showSocialLinks}
 				<div>
-					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-						Connect
-					</h3>
+					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">Connect</h3>
 					<div class="flex space-x-3">
 						<a
 							href="https://www.facebook.com/"
@@ -82,7 +79,9 @@
 			{/if}
 		</div>
 		<div class="border-t border-gray-200 mt-8 pt-8 text-center">
-			<p class="text-white">&copy; {getCurrentYear()} Анализатор на потребителските цени. Всички права запазени.</p>
+			<p class="text-white">
+				&copy; {getCurrentYear()} Анализатор на потребителските цени. Всички права запазени.
+			</p>
 		</div>
 	</div>
 </footer>

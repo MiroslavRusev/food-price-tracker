@@ -4,7 +4,7 @@
 
 <header class="bg-slate-600 border-b border-gray-100 shadow-sm">
 	<div class="header-content mx-auto px-6 py-1">
-		<div class="flex items-start justify-between">
+		<div class="flex items-center justify-between">
 			<img src={Logo} alt="Logo" class="w-10 h-10 mr-4" />
 			<h1 class="flex-1 text-2xl font-bold text-white pt-1">Анализатор на потребителските цени</h1>
 			<div class="flex-1 flex justify-end">

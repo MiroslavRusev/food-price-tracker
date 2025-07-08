@@ -11,7 +11,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		const MAX_VALUE = 1000000; // 1 million limit
 		const MIN_POSITIVE_VALUE = 0.01; // Minimum positive value
 
-
 		// Extract and validate all form values
 		const values: Record<string, number> = {};
 		for (const field of formFields) {
@@ -53,8 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Calculate what the previous salary should have been to match current purchasing power
 		// Formula: previousSalary = currentDisposableIncome + previousExpenses
 		// This gives us the salary needed in the past to have the same disposable income
-		const previousSalaryValueMatchingCurrentPurchasingPower =
-			currentDisposableIncome + totalExpensesThen;
+		const previousSalaryValueMatchingCurrentPurchasingPower = currentDisposableIncome + totalExpensesThen;
 
 		const result: FormCalculationResult = {
 			monthlyBudget,

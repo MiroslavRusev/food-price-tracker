@@ -4,7 +4,7 @@ import type { FoodPriceData, ChartData, FoodItem } from '$lib/interfaces';
 
 // Get available food items from API
 export const getFoodItems = async (): Promise<FoodItem[]> => {
-	const data = await fetchApiData({url: '/api/food-prices'});
+	const data = await fetchApiData({ url: '/api/food-prices' });
 	// Validate that the response is from the correct type
 	if ('foodItems' in data) {
 		return data.foodItems;
@@ -13,16 +13,13 @@ export const getFoodItems = async (): Promise<FoodItem[]> => {
 };
 
 // Get chart data using real API data
-export const getChartData = async (
-	selectedRange: string,
-	selectedFoods: string[]
-): Promise<ChartData> => {
+export const getChartData = async (selectedRange: string, selectedFoods: string[]): Promise<ChartData> => {
 	// Filter labels based on selected range
 	const range = timeRanges.find((r) => r.id === selectedRange);
 	if (!range) {
 		return { labels: [], datasets: [] };
 	}
-	const data = await fetchApiData({url: '/api/food-prices'});
+	const data = await fetchApiData({ url: '/api/food-prices' });
 	// Validate that the response is from the correct type
 	if (!('foodItems' in data)) {
 		throw new Error('Invalid API response: foodItems not found');
