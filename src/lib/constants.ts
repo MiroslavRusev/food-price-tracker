@@ -36,35 +36,30 @@ export const formFields = [
 		id: 'monthly-budget-then',
 		label: 'Месечен доход в началото на периода',
 		type: 'text',
-		inputmode: 'numeric',
 		key: 'monthlyBudgetThen'
 	},
 	{
 		id: 'monthly-budget-now',
 		label: 'Месечен доход към днешна дата',
 		type: 'text',
-		inputmode: 'numeric',
 		key: 'monthlyBudget'
 	},
 	{
 		id: 'food-expense',
 		label: 'Разход храна към днешна дата',
 		type: 'text',
-		inputmode: 'numeric',
 		key: 'foodExpense'
 	},
 	{
 		id: 'fuel-expense',
 		label: 'Разход гориво към днешна дата',
 		type: 'text',
-		inputmode: 'numeric',
 		key: 'fuelExpense'
 	},
 	{
 		id: 'utility-expense',
 		label: 'Разход ток и вода към днешна дата',
 		type: 'text',
-		inputmode: 'numeric',
 		key: 'utilityExpense'
 	}
 ];

@@ -17,6 +17,14 @@ interface FoodItem {
 	color: string;
 }
 
+// Type definitions for form field
+interface FormField {
+	id: string;
+	label: string;
+	type: string;
+	key: string;
+}
+
 // Type definitions for food API response
 interface FoodApiResponse {
 	foodItems: FoodItem[];
@@ -80,6 +88,7 @@ export type {
 	FoodApiResponse,
 	FuelApiResponse,
 	EurostatResponse,
+	FormField,
 	FormCalculationResult,
 	FuelRequest,
 	FuelData

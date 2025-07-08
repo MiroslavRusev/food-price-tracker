@@ -1,19 +1,10 @@
 <script lang="ts">
 	import { formFields } from '$lib/constants';
-	import type { FormCalculationResult } from '$lib/interfaces';
-	import type { ChartData } from '$lib/interfaces';
+	import type { ChartData, FormField, FormCalculationResult } from '$lib/interfaces';
 
-	let formData: any[] = [];
 	let loading = false;
 	let result: FormCalculationResult | null = null;
 	let error: string | null = null;
-
-	$: formData = formFields.map((field) => ({
-		id: field.id,
-		label: field.label,
-		type: field.type,
-		inputmode: field.inputmode
-	}));
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -94,14 +85,14 @@
 </div>
 <div class="space-y-6">
 	<form on:submit={handleSubmit} class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6">
-		{#each formData as field}
+		{#each formFields as field}
 			{#if field.id.startsWith('monthly-budget')}
 				<label class="block">
 					<span class="text-gray-700 text-lg">{field.label}</span>
 					<input
 						class="bg-gray-50 mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
 						type={field.type}
-						inputmode={field.inputmode}
+						inputmode="numeric"
 						id={field.id}
 						name={field.id}
 						required
@@ -114,7 +105,7 @@
 					<input
 						class="bg-gray-50 mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
 						type={field.type}
-						inputmode={field.inputmode}
+						inputmode="numeric"
 						id={field.id}
 						name={field.id}
 						disabled={loading}
