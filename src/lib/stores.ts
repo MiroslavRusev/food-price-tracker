@@ -7,7 +7,7 @@ export const selectedFoods = writable<string[]>([]);
 export const foodStore = {
 	// Add a food to selection
 	add: (foodId: string) => {
-		selectedFoods.update(foods => {
+		selectedFoods.update((foods) => {
 			if (!foods.includes(foodId)) {
 				return [...foods, foodId];
 			}
@@ -17,14 +17,14 @@ export const foodStore = {
 
 	// Remove a food from selection
 	remove: (foodId: string) => {
-		selectedFoods.update(foods => foods.filter(id => id !== foodId));
+		selectedFoods.update((foods) => foods.filter((id) => id !== foodId));
 	},
 
 	// Toggle a food selection
 	toggle: (foodId: string) => {
-		selectedFoods.update(foods => {
+		selectedFoods.update((foods) => {
 			if (foods.includes(foodId)) {
-				return foods.filter(id => id !== foodId);
+				return foods.filter((id) => id !== foodId);
 			} else {
 				return [...foods, foodId];
 			}
@@ -36,12 +36,12 @@ export const foodStore = {
 		selectedFoods.set([]);
 	},
 
-    get: () => {
-        return selectedFoods;
-    },
+	get: () => {
+		return selectedFoods;
+	},
 
 	// Set specific selections
 	set: (foodIds: string[]) => {
 		selectedFoods.set(foodIds);
 	}
-}; 
+};

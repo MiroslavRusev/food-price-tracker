@@ -23,11 +23,11 @@
 </script>
 
 <div class="w-full h-full">
-	<Line 
-		{data} 
-		width={500} 
-		height={300} 
-		options={{ 
+	<Line
+		{data}
+		width={500}
+		height={300}
+		options={{
 			maintainAspectRatio: false,
 			responsive: true,
 			plugins: {
@@ -79,6 +79,6 @@
 					}
 				}
 			}
-		}} 
+		}}
 	/>
 </div>

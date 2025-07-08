@@ -47,11 +47,18 @@ interface FormCalculationResult {
 	monthlyBudgetThen: number;
 	totalExpensesNow: number;
 	totalExpensesThen: number;
-	remainingBudget: number;
-	remainingBudgetThen: number;
+	currentDisposableIncome: number;
+	previousDisposableIncome: number;
 	inflationRate: number;
 	netExpensesDifference: number;
 	previousSalaryValueMatchingCurrentPurchasingPower: number;
 }
 
-export type { FoodPriceData, ChartData, FoodItem, ApiResponse, EurostatResponse, FormCalculationResult };
+export type {
+	FoodPriceData,
+	ChartData,
+	FoodItem,
+	ApiResponse,
+	EurostatResponse,
+	FormCalculationResult
+};

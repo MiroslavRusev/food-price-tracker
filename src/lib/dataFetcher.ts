@@ -1,7 +1,6 @@
 import { timeRanges } from '$lib/constants';
 import type { FoodPriceData, ChartData, FoodItem, ApiResponse } from '$lib/interfaces';
 
-
 // Cache for API data
 let cachedData: ApiResponse | null = null;
 let lastFetchTime = 0;
@@ -10,19 +9,19 @@ const CACHE_DURATION = 60 * 60 * 1000; // 60 minutes
 // Fetch data from API
 const fetchApiData = async (): Promise<ApiResponse> => {
 	const now = Date.now();
-	
+
 	// Return cached data if it's still valid
-	if (cachedData && (now - lastFetchTime) < CACHE_DURATION) {
+	if (cachedData && now - lastFetchTime < CACHE_DURATION) {
 		return cachedData;
 	}
-	
+
 	try {
 		const url = '/api/food-prices';
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
-		
+
 		const data = await response.json();
 		cachedData = data;
 		lastFetchTime = now;
@@ -45,20 +44,21 @@ export const getFoodItems = async (): Promise<FoodItem[]> => {
 };
 
 // Get chart data using real API data
-export const getChartData = async (selectedRange: string, selectedFoods: string[]): Promise<ChartData> => {
+export const getChartData = async (
+	selectedRange: string,
+	selectedFoods: string[]
+): Promise<ChartData> => {
 	// Filter labels based on selected range
-	const range = timeRanges.find(r => r.id === selectedRange);
+	const range = timeRanges.find((r) => r.id === selectedRange);
 	if (!range) {
 		return { labels: [], datasets: [] };
 	}
 
 	const data = await fetchApiData();
 
-	
 	if (!data.foodItems.length || !data.labels.length) {
 		return { labels: [], datasets: [] };
 	}
-
 
 	// Calculate how many data points to show based on the range
 	let dataPointsToShow: number;
@@ -77,13 +77,13 @@ export const getChartData = async (selectedRange: string, selectedFoods: string[
 	const recentLabels = data.labels.slice(-dataPointsToShow);
 	const datasets: FoodPriceData[] = [];
 
-	selectedFoods.forEach(foodId => {
-		const food = data.foodItems.find(f => f.id === foodId);
+	selectedFoods.forEach((foodId) => {
+		const food = data.foodItems.find((f) => f.id === foodId);
 		const prices = data.priceData[foodId];
 		if (food && prices) {
 			// Get the most recent price data
 			const recentPrices = prices.slice(-dataPointsToShow);
-			
+
 			datasets.push({
 				label: food.name,
 				data: recentPrices,
