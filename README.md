@@ -4,11 +4,11 @@ A modern web application for tracking and visualizing food prices over time. Bui
 
 ## Features
 
--  Interactive price charts with multiple time ranges (30 days to 10 years)
--  Track various food items including flour, cooking oil, sugar, vegetables, meat, and dairy
--  Responsive design with Tailwind CSS
--  Fast and lightweight SvelteKit application
--  Beautiful UI with smooth animations
+- Interactive price charts with multiple time ranges (30 days to 10 years)
+- Track various food items including flour, cooking oil, sugar, vegetables, meat, and dairy
+- Responsive design with Tailwind CSS
+- Fast and lightweight SvelteKit application
+- Beautiful UI with smooth animations
 
 ## Tech Stack
 
@@ -28,17 +28,20 @@ A modern web application for tracking and visualizing food prices over time. Bui
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd svetle
 ```
 
 2. Install dependencies:
+
 ```bash
 yarn install
 ```
 
 3. Start the development server:
+
 ```bash
 yarn dev
 ```
