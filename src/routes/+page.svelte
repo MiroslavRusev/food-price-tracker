@@ -3,16 +3,18 @@
 	import Chart from '../components/chart.svelte';
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
-	import { selectedFoods, foodStore } from '$lib/stores';
+	import FuelItems from '../components/fuelItems.svelte';
+	import { selectedFoods, foodStore, fuelStore } from '$lib/stores';
 	import { getChartData, getFoodItems } from '$lib/foodDataFetcher';
-	import type { FoodItem, ChartData } from '$lib/interfaces';
+	import type { FoodItem, ChartData, FuelItem } from '$lib/interfaces';
 	import HeaderImage from '$lib/assets/header-image.webp';
 	import Form from '../components/Form.svelte';
+	import { getFuelItems } from '$lib/fuelDataFetcher';
 
 	let loading = true;
 	let error = false;
 	let foodItems: FoodItem[] = [];
-
+	let fuelItems: FuelItem[] = [];
 	const defaults = {
 		range: '3months',
 		foods: ['bread']
@@ -26,7 +28,7 @@
 			loading = true;
 			// Load food items first
 			foodItems = await getFoodItems();
-
+			fuelItems = await getFuelItems();
 			// Set default selection to first available food if bread is not available
 			if (foodItems.length > 0 && !foodItems.find((f) => f.id === 'bread')) {
 				foodStore.set([foodItems[0].id]);
@@ -60,6 +62,7 @@
 	}
 
 	function resetToDefaults() {
+		fuelStore.clear();
 		if (
 			selectedRange !== defaults.range ||
 			$selectedFoods.length !== defaults.foods.length ||
@@ -127,7 +130,7 @@
 				<div class="max-w-6xl mx-auto px-6 space-y-8">
 					<DataRange bind:selectedRange />
 					<FoodItems {foodItems} />
-
+					<FuelItems {fuelItems} bind:selectedRange />
 					<div class="flex justify-center pt-4 pb-8">
 						<button
 							class="inline-flex items-center px-6 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

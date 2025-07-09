@@ -17,6 +17,13 @@ interface FoodItem {
 	color: string;
 }
 
+// Type definitions for the fuel items
+interface FuelItem {
+	id: string;
+	name: string;
+	color: string;
+}
+
 // Type definitions for form field
 interface FormField {
 	id: string;
@@ -48,6 +55,7 @@ interface FuelData {
 	price: number;
 	dimension: string;
 	date: string;
+	status?: string;
 }
 
 // Type definitions for Eurostat API response
@@ -85,6 +93,7 @@ export type {
 	FoodPriceData,
 	ChartData,
 	FoodItem,
+	FuelItem,
 	FoodApiResponse,
 	FuelApiResponse,
 	EurostatResponse,

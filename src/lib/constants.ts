@@ -23,6 +23,13 @@ export const foodItems = [
 	{ id: 'sugar', name: 'Захар', code: 'CP01181', color: '#FF8E53' }
 ];
 
+export const fuelItems = [
+	{ id: 'gasoline', name: 'Бензин', color: '#FFE66D' },
+	{ id: 'diesel', name: 'Дизел', color: '#FFD700' },
+	{ id: 'lpg', name: 'LPG', color: '#33FF5E' },
+	{ id: 'methane', name: 'Метан', color: '#FF8E53' }
+];
+
 export const timeRanges = [
 	{ id: '3months', label: '3 months', period: 'months', length: 3 },
 	{ id: '6months', label: '6 months', period: 'months', length: 6 },

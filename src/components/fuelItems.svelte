@@ -1,0 +1,69 @@
+<script lang="ts">
+	import type { FuelItem } from '$lib/interfaces';
+	import { selectedFuels, fuelStore, currentFuelPrice } from '$lib/stores';
+	import { getFuelData } from '$lib/fuelDataFetcher';
+	import { timeRanges } from '$lib/constants';
+
+	export let selectedRange: string;
+
+	export let fuelItems: FuelItem[] = [];
+
+	async function handleFuelSelect(fuelItem: FuelItem) {
+		fuelStore.toggle(fuelItem.id);
+	}
+
+	async function handlePriceUpdate(fuelItemId: string) {
+		const now = new Date();
+		// Using CA as hack to not do stupid string splits, reversing etc, due to the format of the API
+		const formattedDate = now.toLocaleDateString('en-CA');
+		const data = await getFuelData({ fuelType: fuelItemId, date: formattedDate });
+		currentFuelPrice.set(data);
+	}
+
+	async function handleHistoricalPrice(fuelItemId: string, selectedRange: string) {
+		const period = timeRanges.find(({ id }) => id === selectedRange);
+		// TO DO - finalize calculation
+		console.log(period);
+	}
+
+	$: if ($selectedFuels) {
+		handlePriceUpdate($selectedFuels);
+		handleHistoricalPrice($selectedFuels, selectedRange);
+	} else {
+		fuelStore.clear();
+		currentFuelPrice.set({
+			fuel: '',
+			price: 0,
+			dimension: '',
+			date: ''
+		});
+	}
+</script>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+	<h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Списък с горива</h2>
+	<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+		{#each fuelItems as fuel}
+			<button
+				class="relative px-4 py-4 text-center min-h-20 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 {$selectedFuels.includes(
+					fuel.id
+				)
+					? 'bg-green-50 border-green-200 text-green-900 shadow-sm'
+					: 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'}"
+				on:click={() => handleFuelSelect(fuel)}
+			>
+				<div class="font-medium text-sm">{fuel.name}</div>
+				{#if $selectedFuels.includes(fuel.id)}
+					<div class="absolute top-2 right-2 w-2 h-2 bg-green-600 rounded-full"></div>
+					<div class="text-sm text-gray-500">
+						{#if $currentFuelPrice.price !== 0}
+							{$currentFuelPrice.price} {$currentFuelPrice.dimension}
+						{:else}
+							-
+						{/if}
+					</div>
+				{/if}
+			</button>
+		{/each}
+	</div>
+</div>
