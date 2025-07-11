@@ -35,6 +35,11 @@ export default ts.config(
 				parser: ts.parser,
 				svelteConfig
 			}
+		},
+		rules: {
+			'svelte/no-at-html-tags': 'off',
+			'no-unused-expressions': 'off',
+			'@typescript-eslint/no-unused-expressions': 'off'
 		}
 	}
 );

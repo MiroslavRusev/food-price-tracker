@@ -48,7 +48,7 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 	<h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Списък с горива</h2>
 	<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-		{#each fuelItems as fuel}
+		{#each fuelItems as fuel (fuel.id)}
 			<button
 				class="relative px-4 py-4 text-center min-h-20 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 {$selectedFuels.includes(
 					fuel.id

@@ -93,7 +93,7 @@
 </div>
 <div class="space-y-6">
 	<form on:submit={handleSubmit} class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6">
-		{#each formFields as field}
+		{#each formFields as field (field.id)}
 			{#if field.id.startsWith('monthly-budget')}
 				<label class="block">
 					<span class="text-gray-700 text-lg">{field.label} *</span>

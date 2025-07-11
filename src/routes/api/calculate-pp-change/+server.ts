@@ -38,21 +38,21 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		// Destructure values for easier access
-		const { 
-			monthlyBudget, 
-			monthlyBudgetThen, 
-			foodExpense, 
+		const {
+			monthlyBudget,
+			monthlyBudgetThen,
+			foodExpense,
 			fuelExpense,
-			utilityExpense, 
-			inflationRate, 
-			historicalFuelPrice 
+			utilityExpense,
+			inflationRate,
+			historicalFuelPrice
 		} = values;
 
 		// Calculate purchasing power change
 		// This is a simplified calculation - you can make it more sophisticated
 		const totalExpensesNow = foodExpense + fuelExpense + utilityExpense;
 		// Calculate total expenses at the start of the period by dividing the current expenses by (1 + inflation rate)
-		const totalExpensesThen = (foodExpense / (1 + inflationRate)) + historicalFuelPrice + utilityExpense;
+		const totalExpensesThen = foodExpense / (1 + inflationRate) + historicalFuelPrice + utilityExpense;
 		// Calculate the remaining budget for each period
 		const currentDisposableIncome = monthlyBudget - totalExpensesNow;
 		const previousDisposableIncome = monthlyBudgetThen - totalExpensesThen;
