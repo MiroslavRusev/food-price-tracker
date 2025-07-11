@@ -15,6 +15,13 @@ export const currentFuelPrice = writable<FuelData>({
 	date: ''
 });
 
+export const historicalFuelPrice = writable<FuelData>({
+	fuel: '',
+	price: 0,
+	dimension: '',
+	date: ''
+});
+
 // Helper functions to work with the store
 export const foodStore = {
 	// Add a food to selection

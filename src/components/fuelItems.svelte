@@ -1,10 +1,17 @@
 <script lang="ts">
 	import type { FuelItem } from '$lib/interfaces';
-	import { selectedFuels, fuelStore, currentFuelPrice } from '$lib/stores';
+	import { selectedFuels, fuelStore, currentFuelPrice, historicalFuelPrice } from '$lib/stores';
 	import { getFuelData } from '$lib/fuelDataFetcher';
-	import { timeRanges } from '$lib/constants';
+	import { getDateFromRange } from '$lib/dateFromRange';
 
 	export let selectedRange: string;
+
+	const zeroFuelData = {
+		fuel: '',
+		price: 0,
+		dimension: '',
+		date: ''
+	};
 
 	export let fuelItems: FuelItem[] = [];
 
@@ -21,9 +28,11 @@
 	}
 
 	async function handleHistoricalPrice(fuelItemId: string, selectedRange: string) {
-		const period = timeRanges.find(({ id }) => id === selectedRange);
-		// TO DO - finalize calculation
-		console.log(period);
+		const dateInPast = getDateFromRange(selectedRange);
+		const formattedDate = dateInPast?.toLocaleDateString('en-CA');
+		if (!formattedDate) throw new Error('Invalid date');
+		const data = await getFuelData({ fuelType: fuelItemId, date: formattedDate });
+		historicalFuelPrice.set(data);
 	}
 
 	$: if ($selectedFuels) {
@@ -31,12 +40,8 @@
 		handleHistoricalPrice($selectedFuels, selectedRange);
 	} else {
 		fuelStore.clear();
-		currentFuelPrice.set({
-			fuel: '',
-			price: 0,
-			dimension: '',
-			date: ''
-		});
+		currentFuelPrice.set(zeroFuelData);
+		historicalFuelPrice.set(zeroFuelData);
 	}
 </script>
 

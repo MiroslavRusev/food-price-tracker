@@ -27,20 +27,32 @@ export const POST: RequestHandler = async ({ request }) => {
 				return json({ error: `${field.label} не може да надвишава 1,000,000` }, { status: 400 });
 			}
 		}
-		// Inflation rate is calculated programmatically not from user input, so it's not part of form fields
+		// Inflation rate and historical fuel  calculated programmatically not from user input, so it's not part of form fields
 		values['inflationRate'] = parseFloat(formData.get('inflationRate') as string);
+		values['historicalFuelPrice'] = JSON.parse(formData.get('historicalFuelPrice') as string);
 		if (isNaN(values['inflationRate'])) {
 			return json({ error: 'Инфлацията не е валидно число' }, { status: 400 });
 		}
+		if (isNaN(values['historicalFuelPrice'])) {
+			return json({ error: 'Историческите цени на горивото не са валидни' }, { status: 400 });
+		}
 
 		// Destructure values for easier access
-		const { monthlyBudget, monthlyBudgetThen, foodExpense, fuelExpense, utilityExpense, inflationRate } = values;
+		const { 
+			monthlyBudget, 
+			monthlyBudgetThen, 
+			foodExpense, 
+			fuelExpense,
+			utilityExpense, 
+			inflationRate, 
+			historicalFuelPrice 
+		} = values;
 
 		// Calculate purchasing power change
 		// This is a simplified calculation - you can make it more sophisticated
 		const totalExpensesNow = foodExpense + fuelExpense + utilityExpense;
 		// Calculate total expenses at the start of the period by dividing the current expenses by (1 + inflation rate)
-		const totalExpensesThen = totalExpensesNow / (1 + inflationRate);
+		const totalExpensesThen = (foodExpense / (1 + inflationRate)) + historicalFuelPrice + utilityExpense;
 		// Calculate the remaining budget for each period
 		const currentDisposableIncome = monthlyBudget - totalExpensesNow;
 		const previousDisposableIncome = monthlyBudgetThen - totalExpensesThen;

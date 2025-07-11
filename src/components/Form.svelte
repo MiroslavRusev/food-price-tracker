@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formFields } from '$lib/constants';
 	import type { ChartData, FormCalculationResult } from '$lib/interfaces';
-	import { selectedFuels, currentFuelPrice } from '$lib/stores';
+	import { selectedFuels, currentFuelPrice, historicalFuelPrice } from '$lib/stores';
 	import { fuelItems } from '$lib/constants';
 
 	let loading: boolean = false;
@@ -127,7 +127,7 @@
 							name="fuel-amount-input"
 							type="number"
 							class="bg-gray-50 w-1/2 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
-							placeholder="Въведете количество гориво"
+							placeholder="Въведете количество гориво в литри"
 							disabled={loading}
 							bind:value={fuelAmount}
 						/>
@@ -155,6 +155,13 @@
 			{/if}
 		{/each}
 		<input type="hidden" name="inflationRate" value={inflationRate} />
+		<input
+			type="hidden"
+			name="historicalFuelPrice"
+			value={$currentFuelPrice.price !== 0 && fuelAmount !== '' && fuelAmount !== null
+				? (Number($historicalFuelPrice.price) * Number(fuelAmount)).toFixed(2)
+				: ''}
+		/>
 		<button
 			type="submit"
 			class="bg-slate-800 text-white px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
