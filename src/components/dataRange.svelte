@@ -11,7 +11,7 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 	<h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Филтрирай по период</h2>
 	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-		{#each timeRanges as range}
+		{#each timeRanges as range (range.id)}
 			<button
 				class="relative px-6 py-4 text-left rounded-xl border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {selectedRange ===
 				range.id

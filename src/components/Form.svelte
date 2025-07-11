@@ -1,19 +1,13 @@
 <script lang="ts">
 	import { formFields } from '$lib/constants';
-	import type { FormCalculationResult } from '$lib/interfaces';
-	import type { ChartData } from '$lib/interfaces';
+	import type { ChartData, FormCalculationResult } from '$lib/interfaces';
+	import { selectedFuels, currentFuelPrice, historicalFuelPrice } from '$lib/stores';
+	import { fuelItems } from '$lib/constants';
 
-	let formData: any[] = [];
-	let loading = false;
+	let loading: boolean = false;
 	let result: FormCalculationResult | null = null;
 	let error: string | null = null;
-
-	$: formData = formFields.map((field) => ({
-		id: field.id,
-		label: field.label,
-		type: field.type,
-		inputmode: field.inputmode
-	}));
+	let fuelAmount: number | string = '';
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -52,13 +46,11 @@
 	function calculateInflationRate(data: ChartData) {
 		const numberOfDataPoints = data.datasets.length;
 		let percentageChanges: number[] = [];
-		console.log(data.datasets);
 		for (let i = 0; i < numberOfDataPoints; i++) {
 			const values = data.datasets[i].data;
 			// Calculate the delta between the last and first value (the value is in percentage)
 			percentageChanges.push((values[values.length - 1] - values[0]) / values[0]);
 		}
-		console.log(percentageChanges);
 		return percentageChanges;
 	}
 
@@ -79,9 +71,13 @@
 		return { periodString, productsString };
 	}
 
-	// Calculate the price change when data changes
+	// Calculate inflation rate when data changes
 	$: inflationRate = calculateInflationRate(data);
+	// Should selected period, products and fuel on top of the form
 	$: ({ periodString, productsString } = handleSelectedProductsAndPeriod(data));
+	$: selectedFuelsString = $selectedFuels
+		? fuelItems.find((fuel) => fuel.id === $selectedFuels)?.name
+		: 'Не е избрано гориво';
 </script>
 
 <h3 class="text-2xl font-bold mb-2">
@@ -93,33 +89,64 @@
 <div class="bg-slate-100 border-2 border-gray-200 rounded-md p-2 mb-6">
 	<p class="text-amber-600 underline text-base mt-2">Избраният период е: {periodString}</p>
 	<p class="text-amber-600 underline text-base mt-2 mb-2">Избрани продукти: {productsString}</p>
+	<p class="text-amber-600 underline text-base mt-2 mb-2">Избрано гориво: {selectedFuelsString}</p>
 </div>
 <div class="space-y-6">
-	<form
-		on:submit={handleSubmit}
-		class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6"
-	>
-		{#each formData as field}
+	<form on:submit={handleSubmit} class="grid grid-cols-1 gap-6 border-2 border-gray-200 rounded-md p-6">
+		{#each formFields as field (field.id)}
 			{#if field.id.startsWith('monthly-budget')}
 				<label class="block">
-					<span class="text-gray-700 text-lg">{field.label}</span>
+					<span class="text-gray-700 text-lg">{field.label} *</span>
 					<input
-						class="bg-gray-50 mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+						class="bg-gray-50 mt-0 block w-1/2 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
 						type={field.type}
-						inputmode={field.inputmode}
+						inputmode="numeric"
 						id={field.id}
 						name={field.id}
 						required
 						disabled={loading}
 					/>
 				</label>
-			{:else}
+			{:else if field.id.startsWith('fuel-expense')}
 				<label class="block">
 					<span class="text-gray-700 text-lg">{field.label}</span>
+					<div class="flex gap-4 mt-2">
+						<input
+							class="bg-gray-50 block w-1/2 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+							type={field.type}
+							inputmode="numeric"
+							id={field.id}
+							name={field.id}
+							readonly
+							value={$currentFuelPrice.price !== 0
+								? (Number($currentFuelPrice.price) * Number(fuelAmount)).toFixed(2)
+								: ''}
+						/>
+						<input
+							id="fuel-amount-input"
+							name="fuel-amount-input"
+							type="number"
+							class="bg-gray-50 w-1/2 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+							placeholder="Въведете количество гориво в литри"
+							disabled={loading}
+							bind:value={fuelAmount}
+						/>
+					</div>
+					{#if $currentFuelPrice.price === 0 && fuelAmount !== '' && fuelAmount !== null}
+						<div class="text-red-600 text-sm mt-1">Моля изберете вид гориво</div>
+					{/if}
+				</label>
+			{:else}
+				<label class="block">
+					{#if field.id.startsWith('food-expense')}
+						<span class="text-gray-700 text-lg">{field.label} *</span>
+					{:else}
+						<span class="text-gray-700 text-lg">{field.label}</span>
+					{/if}
 					<input
-						class="bg-gray-50 mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+						class="bg-gray-50 mt-0 block w-1/2 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
 						type={field.type}
-						inputmode={field.inputmode}
+						inputmode="numeric"
 						id={field.id}
 						name={field.id}
 						disabled={loading}
@@ -128,6 +155,13 @@
 			{/if}
 		{/each}
 		<input type="hidden" name="inflationRate" value={inflationRate} />
+		<input
+			type="hidden"
+			name="historicalFuelPrice"
+			value={$currentFuelPrice.price !== 0 && fuelAmount !== '' && fuelAmount !== null
+				? (Number($historicalFuelPrice.price) * Number(fuelAmount)).toFixed(2)
+				: ''}
+		/>
 		<button
 			type="submit"
 			class="bg-slate-800 text-white px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
@@ -193,7 +227,8 @@
 						<div class="bg-white p-3 rounded border">
 							<div class="font-medium text-gray-900">Разход в началото на периода</div>
 							<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
-								Това е нетната сума, след приспадане на разходите.
+								Това е сумата на днешния разход преизчислена към цените и инфлацията от началото на
+								периода. Тоест каква е била цената на същите продукти тогава.
 							</div>
 							<div class="text-red-600 font-semibold">
 								{result.totalExpensesThen.toFixed(2)} лв.
@@ -210,6 +245,9 @@
 						</div>
 						<div class="bg-white p-3 rounded border">
 							<div class="font-medium text-gray-900">Разполагаем доход в началото на периода</div>
+							<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
+								Това е нетната сума, след приспадане на разходите.
+							</div>
 							<div class="text-blue-600 font-semibold">
 								{result.previousDisposableIncome.toFixed(2)} лв.
 							</div>
@@ -224,8 +262,8 @@
 						<div class="bg-white p-3 rounded border">
 							<div class="font-medium text-gray-900">Нетна разлика в разходите към днешна дата</div>
 							<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
-								Положителна стойност означава, че разходите са се увеличили, а отрицателна означава,
-								че са се смалили.
+								Положителна стойност означава, че разходите са се увеличили, а отрицателна означава, че
+								са се смалили.
 							</div>
 							{#if result.netExpensesDifference > 0}
 								<div class="text-red-600 font-semibold">
@@ -243,27 +281,25 @@
 							Сравнение на покупателната сила на дохода в началото на периода и днешния доход
 						</div>
 						<div class="text-gray-900 font-normal text-sm italic mt-2 mb-2">
-							Сумата, която изписва показва разликата в покупателната сила между днешния доход и
-							дохода в началото на периода. Базира се на потребителската кошница - избраните
-							продукти и разходи към днешна дата. Ако новата заплата изпреварва инфлацията, ще е
-							маркирана в зелено, ако изостава - в червено.
+							Сумата, която изписва показва разликата в покупателната сила между днешния доход и дохода в
+							началото на периода. Базира се на потребителската кошница - избраните продукти и разходи към
+							днешна дата. Ако новата заплата изпреварва инфлацията, ще е маркирана в зелено, ако изостава
+							- в червено.
 						</div>
 						<div class="text-slate-600 font-bold text-sm italic mt-2 mb-2">
-							Доход в началото на периода, който е със същата покупателна сила, като
-							днешния: {result.previousSalaryValueMatchingCurrentPurchasingPower.toFixed(2)} лв.
+							Доход в началото на периода, който е със същата покупателна сила, като днешния:
+							{result.previousSalaryValueMatchingCurrentPurchasingPower.toFixed(2)} лв.
 						</div>
 						{#if result.previousSalaryValueMatchingCurrentPurchasingPower > result.monthlyBudgetThen}
 							<div class="text-green-600 font-semibold border-2 border-green-600 rounded-md p-2 mb-2">
 								Новата заплата изпреварва инфлацията с {(
-									result.previousSalaryValueMatchingCurrentPurchasingPower -
-									result.monthlyBudgetThen
+									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
 								).toFixed(2)} лв.
 							</div>
 						{:else}
 							<div class="text-red-600 font-semibold border-2 border-red-600 rounded-md p-2 mb-2">
 								Новата заплата изостава спрямо инфлацията с {(
-									result.previousSalaryValueMatchingCurrentPurchasingPower -
-									result.monthlyBudgetThen
+									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
 								).toFixed(2)} лв.
 							</div>
 						{/if}

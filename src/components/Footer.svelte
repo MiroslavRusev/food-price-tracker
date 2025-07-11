@@ -21,21 +21,19 @@
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 			<div>
 				<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-					Food Price Tracker
+					Анализатор на потребителските цени
 				</h3>
 				<p class="text-white leading-relaxed">
-					Track food prices over time with our interactive charts and data analysis tools.
+					Анализирайте отношението на потребителските цени към доходите на база инфлацията в различни периоди.
 				</p>
 			</div>
 
 			{#if showQuickLinks}
 				<div>
-					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-						Quick Links
-					</h3>
+					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">Източници</h3>
 					<ul class="space-y-2">
 						{#if customLinks.length > 0}
-							{#each customLinks as link}
+							{#each customLinks as link (link.href)}
 								<li>
 									<a href={link.href} class="text-gray-600 hover:text-gray-900 transition-colors">
 										{link.text}
@@ -43,9 +41,17 @@
 								</li>
 							{/each}
 						{:else}
-							<li><a href="/" class="text-white hover:text-black transition-colors">Home</a></li>
-							<li><a href="#" class="text-white hover:text-black transition-colors">About</a></li>
-							<li><a href="#" class="text-white hover:text-black transition-colors">Contact</a></li>
+							<li>
+								<a
+									href="https://ec.europa.eu/eurostat/databrowser/view/prc_fsc_idx/default/table?lang=en&category=prc.prc_oth"
+									class="text-white hover:text-black transition-colors">Eurostat</a
+								>
+							</li>
+							<li>
+								<a href="https://fuelo.net/" class="text-white hover:text-black transition-colors"
+									>Fuelo</a
+								>
+							</li>
 						{/if}
 					</ul>
 				</div>
@@ -54,19 +60,31 @@
 			{#if showSocialLinks}
 				<div>
 					<h3 class="text-lg font-semibold text-white mb-3 underline underline-offset-4">
-						Connect
+						Github source code
 					</h3>
 					<div class="flex space-x-3">
 						<a
-							href="https://www.facebook.com/"
+							href="https://github.com/MiroslavRusev/consumer-price-tracker"
 							target="_blank"
-							aria-label="Facebook"
+							aria-label="Github"
 							class="inline-flex items-center justify-center text-white hover:text-black"
 						>
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 50">
+							<!-- GitHub Mark SVG, from https://github.com/logos -->
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+							>
 								<path
-									fill="currentColor"
-									d="M25,3C12.85,3,3,12.85,3,25c0,11.03,8.125,20.137,18.712,21.728V30.831h-5.443v-5.783h5.443v-3.848 c0-6.371,3.104-9.168,8.399-9.168c2.536,0,3.877,0.188,4.512,0.274v5.048h-3.612c-2.248,0-3.033,2.131-3.033,4.533v3.161h6.588 l-0.894,5.783h-5.694v15.944C38.716,45.318,47,36.137,47,25C47,12.85,37.15,3,25,3z"
+									d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+							0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
+							-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2
+							-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65
+							7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08
+							2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+							1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
 								/>
 							</svg>
 						</a>
@@ -75,7 +93,9 @@
 			{/if}
 		</div>
 		<div class="border-t border-gray-200 mt-8 pt-8 text-center">
-			<p class="text-white">&copy; {getCurrentYear()} Food Price Tracker. All rights reserved.</p>
+			<p class="text-white">
+				&copy; {getCurrentYear()} Анализатор на потребителските цени. Всички права запазени.
+			</p>
 		</div>
 	</div>
 </footer>
