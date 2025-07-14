@@ -4,6 +4,9 @@ import type { FuelData } from './interfaces';
 // Store for selected food IDs
 export const selectedFoods = writable<string[]>([]);
 
+// Store for selected utility IDs
+export const selectedUtilityItems = writable<string[]>([]);
+
 // Store for selected fuel ID (single selection)
 export const selectedFuels = writable<string>('');
 
@@ -87,4 +90,37 @@ export const fuelStore = {
 	set: (fuelId: string) => {
 		selectedFuels.set(fuelId);
 	}
+};
+
+// Helper functions to work with the utility store
+export const utilityStore = {
+	// Add a utility to selection
+	add: (utilityId: string) => {
+		selectedUtilityItems.update((utilities) => {
+			if (!utilities.includes(utilityId)) {
+				return [...utilities, utilityId];
+			}
+			return utilities;
+		});
+	},
+
+	// Remove a utility from selection
+	remove: (utilityId: string) => {
+		selectedUtilityItems.update((utilities) => utilities.filter((id) => id !== utilityId));
+	},
+
+	// Toggle a utility selection
+	toggle: (utilityId: string) => {
+		selectedUtilityItems.update((utilities) => {
+			if (utilities.includes(utilityId)) {
+				return utilities.filter((id) => id !== utilityId);
+			} else {
+				return [...utilities, utilityId];
+			}
+		});
+	},
+	// Clear selection
+	clear: () => {
+		selectedUtilityItems.set([]);
+	},
 };

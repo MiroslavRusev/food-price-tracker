@@ -70,5 +70,16 @@
 				{/if}
 			</button>
 		{/each}
+	<div
+		class="relative px-4 py-4 text-center min-h-20 rounded-xl border transition-all duration-200 bg-gray-50 border-gray-200 text-gray-700 flex flex-col items-center justify-center">
+		<div class="font-medium text-sm">Цена в началото на избрания период</div>
+		<div class="text-sm text-gray-500 mt-1">
+			{#if $historicalFuelPrice.price !== 0}
+				{$historicalFuelPrice.price} {$historicalFuelPrice.dimension}
+			{:else}
+				-
+			{/if}
+		</div>
+	</div>
 	</div>
 </div>

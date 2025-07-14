@@ -4,17 +4,22 @@
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
 	import FuelItems from '../components/fuelItems.svelte';
-	import { selectedFoods, foodStore, fuelStore } from '$lib/stores';
+	import UtilityItems from '../components/utilityItems.svelte';
+	import { selectedFoods, foodStore, fuelStore, selectedUtilityItems, utilityStore } from '$lib/stores';
 	import { getChartData, getFoodItems } from '$lib/foodDataFetcher';
-	import type { FoodItem, ChartData, FuelItem } from '$lib/interfaces';
+	import type { FoodItem, ChartData, FuelItem, UtilityItem } from '$lib/interfaces';
 	import HeaderImage from '$lib/assets/header-image.webp';
 	import Form from '../components/Form.svelte';
 	import { getFuelItems } from '$lib/fuelDataFetcher';
+	import { utilityItems as utilityItemsConstants } from '$lib/constants';
+	import { getUtilityChartData } from '$lib/electricityDataFetcher';
+
 
 	let loading = true;
 	let error = false;
 	let foodItems: FoodItem[] = [];
 	let fuelItems: FuelItem[] = [];
+	let utilityItems: UtilityItem[] = utilityItemsConstants;
 	const defaults = {
 		range: '3months',
 		foods: ['bread']
@@ -48,13 +53,16 @@
 
 	// Reactive statement to update chart data when selections change
 	$: if (!loading && foodItems.length > 0) {
-		(selectedRange, $selectedFoods); // Watch the store value, not the store object
+		(selectedRange, $selectedFoods, $selectedUtilityItems); // Watch the store value, not the store object
 		updateChartData();
 	}
 
 	async function updateChartData() {
 		try {
 			chartData = await getChartData(selectedRange, $selectedFoods);
+			const electricityChartData = await getUtilityChartData(selectedRange, $selectedUtilityItems);
+			console.log(electricityChartData);
+			chartData = { ...chartData, ...electricityChartData };
 		} catch (err) {
 			console.error('Error updating chart data:', err);
 			error = true;
@@ -63,6 +71,7 @@
 
 	function resetToDefaults() {
 		fuelStore.clear();
+		utilityStore.clear();
 		if (
 			selectedRange !== defaults.range ||
 			$selectedFoods.length !== defaults.foods.length ||
@@ -131,6 +140,7 @@
 					<DataRange bind:selectedRange />
 					<FoodItems {foodItems} />
 					<FuelItems {fuelItems} bind:selectedRange />
+					<UtilityItems {utilityItems} />
 					<div class="flex justify-center pt-4 pb-8">
 						<button
 							class="inline-flex items-center px-6 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

@@ -13,6 +13,8 @@ declare global {
 // Environment variable types
 declare module '$env/static/private' {
 	export const BASE_API_URL: string;
+	export const FUELO_API_URL: string;
+	export const FUELO_API_KEY: string;
 }
 
 export {};

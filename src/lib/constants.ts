@@ -23,6 +23,11 @@ export const foodItems = [
 	{ id: 'sugar', name: 'Захар', code: 'CP01181', color: '#FF8E53' }
 ];
 
+export const utilityItems = [
+	{ id: 'electricity', name: 'Електричество', color: '#3371FF' },
+	{ id: 'water', name: 'Вода', color: '#FFD700' },
+];
+
 export const fuelItems = [
 	{ id: 'gasoline', name: 'Бензин', color: '#FFE66D' },
 	{ id: 'diesel', name: 'Дизел', color: '#FFD700' },
