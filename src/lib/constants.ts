@@ -25,7 +25,7 @@ export const foodItems = [
 
 export const utilityItems = [
 	{ id: 'electricity', name: 'Електричество', color: '#3371FF' },
-	{ id: 'water', name: 'Вода', color: '#FFD700' },
+	{ id: 'water', name: 'Вода', color: '#FFD700' }
 ];
 
 export const fuelItems = [

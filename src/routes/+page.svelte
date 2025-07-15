@@ -1,19 +1,27 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import type { FoodItem, ChartData, FuelItem, UtilityItem, FuelBarChartData } from '$lib/interfaces';
 	import Chart from '../components/chart.svelte';
+	import FuelBarChart from '../components/fuelBarChart.svelte';
+	import UtilityChart from '../components/utilityChart.svelte';
+	import Form from '../components/Form.svelte';
 	import DataRange from '../components/dataRange.svelte';
 	import FoodItems from '../components/foodItems.svelte';
 	import FuelItems from '../components/fuelItems.svelte';
 	import UtilityItems from '../components/utilityItems.svelte';
-	import { selectedFoods, foodStore, fuelStore, selectedUtilityItems, utilityStore } from '$lib/stores';
+	import {
+		selectedFoods,
+		foodStore,
+		selectedFuels,
+		fuelStore,
+		selectedUtilityItems,
+		utilityStore
+	} from '$lib/stores';
 	import { getChartData, getFoodItems } from '$lib/foodDataFetcher';
-	import type { FoodItem, ChartData, FuelItem, UtilityItem } from '$lib/interfaces';
+	import { getFuelItems, getFuelBarChartData } from '$lib/fuelDataFetcher';
+	import { getUtilityChartData } from '$lib/utilityDataFetcher';
 	import HeaderImage from '$lib/assets/header-image.webp';
-	import Form from '../components/Form.svelte';
-	import { getFuelItems } from '$lib/fuelDataFetcher';
 	import { utilityItems as utilityItemsConstants } from '$lib/constants';
-	import { getUtilityChartData } from '$lib/electricityDataFetcher';
-
 
 	let loading = true;
 	let error = false;
@@ -22,11 +30,15 @@
 	let utilityItems: UtilityItem[] = utilityItemsConstants;
 	const defaults = {
 		range: '3months',
-		foods: ['bread']
+		foods: ['bread'],
+		fuels: ['gasoline'],
+		utilities: ['electricity']
 	};
 
 	let selectedRange = defaults.range;
-	let chartData: ChartData = { labels: [], datasets: [] };
+	let foodChartData: ChartData = { labels: [], datasets: [] };
+	let fuelChartData: FuelBarChartData = { labels: [], datasets: [] };
+	let utilityChartData: ChartData = { labels: [], datasets: [] };
 
 	onMount(async () => {
 		try {
@@ -40,9 +52,11 @@
 			} else {
 				foodStore.set(defaults.foods);
 			}
+			fuelStore.set(defaults.fuels[0]);
+			utilityStore.set(defaults.utilities[0]);
 
-			// Load initial chart data
-			chartData = await getChartData(selectedRange, $selectedFoods);
+			// Load initial chart data for all charts
+			// await updateChartData();
 		} catch (err) {
 			console.error('Error loading data:', err);
 			error = true;
@@ -53,16 +67,20 @@
 
 	// Reactive statement to update chart data when selections change
 	$: if (!loading && foodItems.length > 0) {
-		(selectedRange, $selectedFoods, $selectedUtilityItems); // Watch the store value, not the store object
+		(selectedRange, $selectedFoods, $selectedUtilityItems, $selectedFuels); // Watch the store value, not the store object
 		updateChartData();
 	}
 
 	async function updateChartData() {
 		try {
-			chartData = await getChartData(selectedRange, $selectedFoods);
-			const electricityChartData = await getUtilityChartData(selectedRange, $selectedUtilityItems);
-			console.log(electricityChartData);
-			chartData = { ...chartData, ...electricityChartData };
+			// Update food chart data
+			foodChartData = await getChartData(selectedRange, $selectedFoods);
+
+			// Update fuel chart data
+			fuelChartData = await getFuelBarChartData(selectedRange, $selectedFuels ? [$selectedFuels] : []);
+
+			// Update utility chart data (only for ranges above 1 year)
+			utilityChartData = await getUtilityChartData(selectedRange, $selectedUtilityItems);
 		} catch (err) {
 			console.error('Error updating chart data:', err);
 			error = true;
@@ -70,15 +88,17 @@
 	}
 
 	function resetToDefaults() {
-		fuelStore.clear();
-		utilityStore.clear();
 		if (
 			selectedRange !== defaults.range ||
+			$selectedFuels !== defaults.fuels[0] ||
+			$selectedUtilityItems !== defaults.utilities ||
 			$selectedFoods.length !== defaults.foods.length ||
 			!defaults.foods.every((f) => $selectedFoods.includes(f))
 		) {
 			selectedRange = defaults.range;
 			foodStore.set(defaults.foods);
+			utilityStore.set(defaults.utilities[0]);
+			fuelStore.set(defaults.fuels[0]);
 		}
 	}
 </script>
@@ -89,7 +109,7 @@
 		class="overlay-image relative"
 		style="background-image: url({HeaderImage}); background-size: cover; background-position: center;"
 	>
-		<div class="max-w-6xl mx-auto chart-container">
+		<div class="max-w-7xl mx-auto chart-container">
 			{#if loading}
 				<div class="flex items-center justify-center min-h-[400px]">
 					<div class="text-center">
@@ -120,14 +140,43 @@
 				<!-- Chart Section -->
 				<div class="p-8 mb-12">
 					<div class="text-center mb-8">
-						<h1 class="text-3xl font-bold text-white mb-2">Хармонизиран индекс на потребителски цени</h1>
-						<p class="text-white text-lg">Index (базов) 2015=100</p>
+						<h1 class="text-3xl font-bold text-white mb-2">Анализатор на потребителските цени</h1>
 					</div>
 
-					<div
-						class="bg-gray-50 rounded-xl border border-gray-200 p-6 min-h-[300px] flex items-center justify-center"
-					>
-						<Chart data={chartData} />
+					<!-- Charts Section -->
+					<div class="mb-8">
+						<div
+							class="bg-gray-50 rounded-xl border border-gray-200 p-6 min-h-[300px] flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-6 lg:gap-4"
+						>
+							<div class="flex flex-col items-center justify-center gap-3 w-full lg:flex-1">
+								<div class="chartText mb-4 text-center text-black">
+									<h2 class="text-xl font-semibold">Храни</h2>
+									<p class="text-sm text-center">
+										Хармонизиран индекс на потребителски цени - (базов) 2015=100
+									</p>
+								</div>
+								<Chart data={foodChartData} />
+							</div>
+							<div class="flex flex-col items-center justify-center gap-3 w-full lg:flex-1">
+								<div class="chartText mb-4 text-center text-black">
+									<h2 class="text-xl font-semibold">Комунални услуги</h2>
+									<p class="text-sm text-center">
+										Графика на цените на комуналните услуги на полугодие.
+									</p>
+								</div>
+								<UtilityChart data={utilityChartData} />
+							</div>
+							<!-- Fuel Chart -->
+							<div class="flex flex-col items-center justify-center gap-3 w-full lg:flex-1">
+								<div class="chartText mb-4 text-center text-black">
+									<h2 class="text-xl font-semibold">Горива</h2>
+									<p class="text-sm text-center">
+										Цени на горивата сега и в началото на избрания период.
+									</p>
+								</div>
+								<FuelBarChart data={fuelChartData} />
+							</div>
+						</div>
 					</div>
 				</div>
 			{/if}
@@ -136,7 +185,7 @@
 		<!-- Controls Section - Overlapping with the overlay -->
 		{#if !loading && !error}
 			<div class="controls-overlap">
-				<div class="max-w-6xl mx-auto px-6 space-y-8">
+				<div class="max-w-7xl mx-auto px-6 space-y-8">
 					<DataRange bind:selectedRange />
 					<FoodItems {foodItems} />
 					<FuelItems {fuelItems} bind:selectedRange />
@@ -161,7 +210,7 @@
 			</div>
 		{/if}
 	</div>
-	<div class="max-w-3xl mx-auto px-6">
-		<Form data={chartData} />
+	<div class="max-w-4xl mx-auto px-6">
+		<Form data={foodChartData} />
 	</div>
 </main>

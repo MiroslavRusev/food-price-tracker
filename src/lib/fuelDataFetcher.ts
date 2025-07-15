@@ -1,6 +1,6 @@
 import { fetchApiData } from '$lib/dataFetch';
-import type { FuelData, FuelRequest, FuelItem } from '$lib/interfaces';
-import { fuelItems } from '$lib/constants';
+import type { FuelData, FuelRequest, FuelItem, FuelBarChartData, FuelBarData } from '$lib/interfaces';
+import { fuelItems, timeRanges } from '$lib/constants';
 
 export const getFuelItems = async (): Promise<FuelItem[]> => {
 	return fuelItems;
@@ -24,4 +24,76 @@ export const getFuelData = async (params: FuelRequest): Promise<FuelData> => {
 	const fuelData = data as unknown as FuelData;
 	// Return the single fuel data object as an array to match the expected return type
 	return fuelData;
+};
+
+export const getFuelBarChartData = async (
+	selectedRange: string,
+	selectedFuelItems: string[]
+): Promise<FuelBarChartData> => {
+	if (selectedFuelItems.length === 0) {
+		return { labels: [], datasets: [] };
+	}
+
+	const range = timeRanges.find((r) => r.id === selectedRange);
+	if (!range) {
+		return { labels: [], datasets: [] };
+	}
+
+	// Calculate the date for the "then" period based on the selected range
+	const now = new Date();
+	let thenDate: Date;
+
+	switch (range.period) {
+		case 'months':
+			thenDate = new Date(now.getFullYear(), now.getMonth() - range.length, now.getDate());
+			break;
+		case 'years':
+			thenDate = new Date(now.getFullYear() - range.length, now.getMonth(), now.getDate());
+			break;
+		default:
+			thenDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+	}
+
+	const datasets: FuelBarData[] = [];
+	const labels = ['Сега', 'Преди'];
+
+	// Get current and previous prices for each selected fuel
+	for (const fuelId of selectedFuelItems) {
+		const fuel = fuelItems.find((item) => item.id === fuelId);
+		if (!fuel) continue;
+
+		try {
+			// Get current price
+			const currentData = await getFuelData({
+				fuelType: fuelId,
+				date: now.toISOString().split('T')[0]
+			});
+
+			// Get previous price
+			const previousData = await getFuelData({
+				fuelType: fuelId,
+				date: thenDate.toISOString().split('T')[0]
+			});
+
+			datasets.push({
+				label: fuel.name,
+				data: [currentData.price, previousData.price],
+				backgroundColor: [fuel.color, '#b3b3b3'],
+				secondBackgroundColor: '#b3b3b3',
+				borderColor: fuel.color
+			});
+		} catch (error) {
+			console.error(`Error fetching data for ${fuelId}:`, error);
+			// Add dataset with zeros if data fetch fails
+			datasets.push({
+				label: fuel.name,
+				data: [0, 0],
+				backgroundColor: [fuel.color, '#b3b3b3'],
+				secondBackgroundColor: fuel.color,
+				borderColor: fuel.color
+			});
+		}
+	}
+
+	return { labels, datasets };
 };

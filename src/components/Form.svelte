@@ -44,14 +44,11 @@
 	};
 
 	function calculateInflationRate(data: ChartData) {
-		const numberOfDataPoints = data.datasets.length;
-		let percentageChanges: number[] = [];
-		for (let i = 0; i < numberOfDataPoints; i++) {
-			const values = data.datasets[i].data;
+		return data.datasets.map(dataset => {
+			const values = dataset.data;
 			// Calculate the delta between the last and first value (the value is in percentage)
-			percentageChanges.push((values[values.length - 1] - values[0]) / values[0]);
-		}
-		return percentageChanges;
+			return (values[values.length - 1] - values[0]) / values[0];
+		});
 	}
 
 	function handleSelectedProductsAndPeriod(data: ChartData) {

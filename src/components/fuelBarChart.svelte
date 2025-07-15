@@ -1,26 +1,18 @@
 <script lang="ts">
 	// @ts-nocheck
-	import { Line } from 'svelte5-chartjs';
-	import type { ChartData } from '$lib/foodDataFetcher';
+	import { Bar } from 'svelte5-chartjs';
+	import type { FuelBarChartData } from '$lib/interfaces';
 
-	import {
-		Chart as ChartJS,
-		Title,
-		Tooltip,
-		Legend,
-		LineElement,
-		LinearScale,
-		PointElement,
-		CategoryScale
-	} from 'chart.js';
+	import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale } from 'chart.js';
 
-	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
+	ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale);
 
-	export let data: ChartData = {
+	export let data: FuelBarChartData = {
 		labels: [],
 		datasets: []
 	};
 
+	// Define options outside component to avoid Svelte state cloning issues
 	const chartOptions = {
 		maintainAspectRatio: false,
 		responsive: true,
@@ -44,7 +36,12 @@
 				borderWidth: 1,
 				cornerRadius: 8,
 				displayColors: true,
-				padding: 12
+				padding: 12,
+				callbacks: {
+					label: function (context) {
+						return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} лв.`;
+					}
+				}
 			}
 		},
 		scales: {
@@ -69,6 +66,9 @@
 					color: '#6B7280',
 					font: {
 						size: 11
+					},
+					callback: function (value) {
+						return value + ' лв.';
 					}
 				}
 			}
@@ -77,5 +77,5 @@
 </script>
 
 <div class="w-full max-w-md lg:max-w-lg h-full">
-	<Line {data} height={300} options={chartOptions} />
+	<Bar {data} height={300} options={chartOptions} />
 </div>

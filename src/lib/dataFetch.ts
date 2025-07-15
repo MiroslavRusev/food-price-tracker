@@ -5,7 +5,11 @@ const cache = new Map<string, { data: FoodApiResponse | FuelApiResponse | Utilit
 const CACHE_DURATION = 60 * 60 * 1000; // 60 minutes
 
 // Fetch data from API
-export const fetchApiData = async ({ url }: { url: string }): Promise<FoodApiResponse | FuelApiResponse | UtilityApiResponse> => {
+export const fetchApiData = async ({
+	url
+}: {
+	url: string;
+}): Promise<FoodApiResponse | FuelApiResponse | UtilityApiResponse> => {
 	const now = Date.now();
 	const cached = cache.get(url);
 

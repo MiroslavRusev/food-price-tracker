@@ -123,4 +123,9 @@ export const utilityStore = {
 	clear: () => {
 		selectedUtilityItems.set([]);
 	},
+
+	// Set specific selection
+	set: (utilityId: string) => {
+		selectedUtilityItems.set([utilityId]);
+	}
 };

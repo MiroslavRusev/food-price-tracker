@@ -1,7 +1,7 @@
 <script lang="ts">
 	// @ts-nocheck
 	import { Line } from 'svelte5-chartjs';
-	import type { ChartData } from '$lib/foodDataFetcher';
+	import type { ChartData } from '$lib/interfaces';
 
 	import {
 		Chart as ChartJS,
@@ -21,6 +21,7 @@
 		datasets: []
 	};
 
+	// Define options outside component to avoid Svelte state cloning issues
 	const chartOptions = {
 		maintainAspectRatio: false,
 		responsive: true,
@@ -44,7 +45,12 @@
 				borderWidth: 1,
 				cornerRadius: 8,
 				displayColors: true,
-				padding: 12
+				padding: 12,
+				callbacks: {
+					label: function (context) {
+						return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} лв.`;
+					}
+				}
 			}
 		},
 		scales: {
@@ -69,6 +75,9 @@
 					color: '#6B7280',
 					font: {
 						size: 11
+					},
+					callback: function (value) {
+						return value + ' лв.';
 					}
 				}
 			}

@@ -6,18 +6,35 @@ interface FoodPriceData {
 	borderColor: string;
 }
 
-// Type definitions for the electricity price data structure
-interface ElectricityPriceData {
+// Type definitions for the utility price data structure
+interface UtilityPriceData {
 	label: string;
 	data: number[];
 	backgroundColor: string;
 	borderColor: string;
 }
+
+// Type definitions for fuel bar chart data
+interface FuelBarData {
+	label: string;
+	data: number[];
+	backgroundColor: string | string[];
+	secondBackgroundColor: string;
+	borderColor: string;
+}
+
 // Type definitions for the chart data structure
 interface ChartData {
 	labels: string[];
-	datasets: FoodPriceData[] | ElectricityPriceData[];
+	datasets: FoodPriceData[] | UtilityPriceData[];
 }
+
+// Type definitions for fuel bar chart data structure
+interface FuelBarChartData {
+	labels: string[];
+	datasets: FuelBarData[];
+}
+
 // Type definitions for the food items
 interface FoodItem {
 	id: string;
@@ -113,6 +130,8 @@ interface FormCalculationResult {
 export type {
 	FoodPriceData,
 	ChartData,
+	FuelBarChartData,
+	FuelBarData,
 	FoodItem,
 	FuelItem,
 	FoodApiResponse,
@@ -123,6 +142,6 @@ export type {
 	FuelRequest,
 	FuelData,
 	UtilityApiResponse,
-	ElectricityPriceData,
-	UtilityItem
+	UtilityItem,
+	UtilityPriceData
 };

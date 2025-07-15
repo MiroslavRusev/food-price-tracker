@@ -6,17 +6,16 @@ import { processEurostatElectricityData } from '$lib/dataElectricityProcessing';
 export const GET: RequestHandler = async () => {
 	try {
 		// Get all product codes as comma-separated string
-		console.log(BASE_API_URL_ELE + ' BASE_API_URL_ELE');
 		const apiUrl = `${BASE_API_URL_ELE}`;
 		const response = await fetch(apiUrl);
-		console.log(response + ' response');
+
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
-
 		const rawData = await response.json();
-		console.log(rawData + ' rawData');
+		// Process the raw data to get the structured data
 		const structuredData = processEurostatElectricityData(rawData);
+		// Return the structured data as JSON
 		return json(structuredData);
 	} catch (error) {
 		console.error('Error fetching data:', error);
