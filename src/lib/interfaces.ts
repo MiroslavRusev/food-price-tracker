@@ -14,6 +14,15 @@ interface UtilityPriceData {
 	borderColor: string;
 }
 
+// Extended interfaces for internal logic with type discriminators
+interface FoodPriceDataWithType extends FoodPriceData {
+	type: 'food';
+}
+
+interface UtilityPriceDataWithType extends UtilityPriceData {
+	type: 'utility';
+}
+
 // Type definitions for fuel bar chart data
 interface FuelBarData {
 	label: string;
@@ -26,7 +35,7 @@ interface FuelBarData {
 // Type definitions for the chart data structure
 interface ChartData {
 	labels: string[];
-	datasets: FoodPriceData[] | UtilityPriceData[];
+	datasets: (FoodPriceData | UtilityPriceData)[];
 }
 
 // Type definitions for fuel bar chart data structure
@@ -129,6 +138,9 @@ interface FormCalculationResult {
 
 export type {
 	FoodPriceData,
+	FoodPriceDataWithType,
+	UtilityPriceData,
+	UtilityPriceDataWithType,
 	ChartData,
 	FuelBarChartData,
 	FuelBarData,
@@ -142,6 +154,5 @@ export type {
 	FuelRequest,
 	FuelData,
 	UtilityApiResponse,
-	UtilityItem,
-	UtilityPriceData
+	UtilityItem
 };

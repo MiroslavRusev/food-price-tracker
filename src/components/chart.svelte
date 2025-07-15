@@ -1,7 +1,7 @@
 <script lang="ts">
 	// @ts-nocheck
 	import { Line } from 'svelte5-chartjs';
-	import type { ChartData } from '$lib/foodDataFetcher';
+	import type { ChartData } from '$lib/interfaces';
 
 	import {
 		Chart as ChartJS,
@@ -11,10 +11,11 @@
 		LineElement,
 		LinearScale,
 		PointElement,
-		CategoryScale
+		CategoryScale,
+		LineController
 	} from 'chart.js';
 
-	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
+	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale, LineController);
 
 	export let data: ChartData = {
 		labels: [],

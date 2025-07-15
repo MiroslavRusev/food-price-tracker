@@ -43,11 +43,27 @@
 		datasets: []
 	};
 
+	// Optional: Add separate prop for utility data
+	export let utilityData: ChartData = {
+		labels: [],
+		datasets: []
+	};
+
 	function calculateInflationRate(data: ChartData) {
+		// Process all datasets for inflation calculations (assuming they are food data)
 		return data.datasets.map((dataset) => {
 			const values = dataset.data;
 			// Calculate the delta between the last and first value (the value is in percentage)
 			return (values[values.length - 1] - values[0]) / values[0];
+		});
+	}
+
+	function returnHistoricalUtilityPrice(data: ChartData) {
+		// Process utility data for utility calculations
+		return data.datasets.map((dataset) => {
+			const values = dataset.data;
+			// Return the first value which is the oldest known price
+			return values[0];
 		});
 	}
 
@@ -70,6 +86,7 @@
 
 	// Calculate inflation rate when data changes
 	$: inflationRate = calculateInflationRate(data);
+	$: utilityHistoricalPrice = returnHistoricalUtilityPrice(utilityData);
 	// Should selected period, products and fuel on top of the form
 	$: ({ periodString, productsString } = handleSelectedProductsAndPeriod(data));
 	$: selectedFuelsString = $selectedFuels
@@ -158,6 +175,11 @@
 			value={$currentFuelPrice.price !== 0 && fuelAmount !== '' && fuelAmount !== null
 				? (Number($historicalFuelPrice.price) * Number(fuelAmount)).toFixed(2)
 				: ''}
+		/>
+		<input
+			type="hidden"
+			name="utilityHistoricalPrice"
+			value={utilityHistoricalPrice.length > 0 ? utilityHistoricalPrice[0] : 0}
 		/>
 		<button
 			type="submit"

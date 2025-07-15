@@ -3,9 +3,9 @@
 	import { Bar } from 'svelte5-chartjs';
 	import type { FuelBarChartData } from '$lib/interfaces';
 
-	import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale } from 'chart.js';
+	import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale, BarController } from 'chart.js';
 
-	ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale);
+	ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale, BarController);
 
 	export let data: FuelBarChartData = {
 		labels: [],
