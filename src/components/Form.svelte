@@ -44,7 +44,7 @@
 	};
 
 	function calculateInflationRate(data: ChartData) {
-		return data.datasets.map(dataset => {
+		return data.datasets.map((dataset) => {
 			const values = dataset.data;
 			// Calculate the delta between the last and first value (the value is in percentage)
 			return (values[values.length - 1] - values[0]) / values[0];
