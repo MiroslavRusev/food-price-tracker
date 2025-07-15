@@ -5,11 +5,45 @@ interface FoodPriceData {
 	backgroundColor: string;
 	borderColor: string;
 }
+
+// Type definitions for the utility price data structure
+interface UtilityPriceData {
+	label: string;
+	data: number[];
+	backgroundColor: string;
+	borderColor: string;
+}
+
+// Extended interfaces for internal logic with type discriminators
+interface FoodPriceDataWithType extends FoodPriceData {
+	type: 'food';
+}
+
+interface UtilityPriceDataWithType extends UtilityPriceData {
+	type: 'utility';
+}
+
+// Type definitions for fuel bar chart data
+interface FuelBarData {
+	label: string;
+	data: number[];
+	backgroundColor: string | string[];
+	secondBackgroundColor: string;
+	borderColor: string;
+}
+
 // Type definitions for the chart data structure
 interface ChartData {
 	labels: string[];
-	datasets: FoodPriceData[];
+	datasets: (FoodPriceData | UtilityPriceData)[];
 }
+
+// Type definitions for fuel bar chart data structure
+interface FuelBarChartData {
+	labels: string[];
+	datasets: FuelBarData[];
+}
+
 // Type definitions for the food items
 interface FoodItem {
 	id: string;
@@ -19,6 +53,13 @@ interface FoodItem {
 
 // Type definitions for the fuel items
 interface FuelItem {
+	id: string;
+	name: string;
+	color: string;
+}
+
+// Type definitions for the utility items
+interface UtilityItem {
 	id: string;
 	name: string;
 	color: string;
@@ -35,6 +76,12 @@ interface FormField {
 // Type definitions for food API response
 interface FoodApiResponse {
 	foodItems: FoodItem[];
+	labels: string[];
+	priceData: { [key: string]: number[] };
+}
+
+interface UtilityApiResponse {
+	utilityItem?: string;
 	labels: string[];
 	priceData: { [key: string]: number[] };
 }
@@ -91,7 +138,12 @@ interface FormCalculationResult {
 
 export type {
 	FoodPriceData,
+	FoodPriceDataWithType,
+	UtilityPriceData,
+	UtilityPriceDataWithType,
 	ChartData,
+	FuelBarChartData,
+	FuelBarData,
 	FoodItem,
 	FuelItem,
 	FoodApiResponse,
@@ -100,5 +152,7 @@ export type {
 	FormField,
 	FormCalculationResult,
 	FuelRequest,
-	FuelData
+	FuelData,
+	UtilityApiResponse,
+	UtilityItem
 };

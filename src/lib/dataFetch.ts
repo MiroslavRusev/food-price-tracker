@@ -1,11 +1,15 @@
-import type { FoodApiResponse, FuelApiResponse } from './interfaces';
+import type { FoodApiResponse, FuelApiResponse, UtilityApiResponse } from './interfaces';
 
 // Cache for API data - separate cache per URL
-const cache = new Map<string, { data: FoodApiResponse | FuelApiResponse; timestamp: number }>();
+const cache = new Map<string, { data: FoodApiResponse | FuelApiResponse | UtilityApiResponse; timestamp: number }>();
 const CACHE_DURATION = 60 * 60 * 1000; // 60 minutes
 
 // Fetch data from API
-export const fetchApiData = async ({ url }: { url: string }): Promise<FoodApiResponse | FuelApiResponse> => {
+export const fetchApiData = async ({
+	url
+}: {
+	url: string;
+}): Promise<FoodApiResponse | FuelApiResponse | UtilityApiResponse> => {
 	const now = Date.now();
 	const cached = cache.get(url);
 
@@ -33,6 +37,12 @@ export const fetchApiData = async ({ url }: { url: string }): Promise<FoodApiRes
 				labels: [],
 				priceData: {}
 			} as FoodApiResponse;
+		} else if (url.includes('electricity-prices')) {
+			return {
+				electricityItem: '',
+				labels: [],
+				priceData: {}
+			} as UtilityApiResponse;
 		} else {
 			return {
 				fuelData: []
