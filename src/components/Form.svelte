@@ -58,12 +58,12 @@
 		});
 	}
 
-	function returnHistoricalUtilityPrice(data: ChartData) {
+	function returnUtilityPrice(data: ChartData) {
 		// Process utility data for utility calculations
 		return data.datasets.map((dataset) => {
 			const values = dataset.data;
 			// Return the first value which is the oldest known price
-			return values[0];
+			return { currentPrice: values[values.length - 1], historicalPrice: values[0] };
 		});
 	}
 
@@ -86,7 +86,7 @@
 
 	// Calculate inflation rate when data changes
 	$: inflationRate = calculateInflationRate(data);
-	$: utilityHistoricalPrice = returnHistoricalUtilityPrice(utilityData);
+	$: utilityPrice = returnUtilityPrice(utilityData);
 	// Should selected period, products and fuel on top of the form
 	$: ({ periodString, productsString } = handleSelectedProductsAndPeriod(data));
 	$: selectedFuelsString = $selectedFuels
@@ -172,15 +172,19 @@
 		<input
 			type="hidden"
 			name="historicalFuelPrice"
-			value={$currentFuelPrice.price !== 0 && fuelAmount !== '' && fuelAmount !== null
-				? (Number($historicalFuelPrice.price) * Number(fuelAmount)).toFixed(2)
-				: ''}
+			value={$currentFuelPrice.price !== 0 ? $historicalFuelPrice.price : ''}
 		/>
 		<input
 			type="hidden"
 			name="utilityHistoricalPrice"
-			value={utilityHistoricalPrice.length > 0 ? utilityHistoricalPrice[0] : 0}
+			value={utilityPrice.length > 0 ? utilityPrice[0].historicalPrice : 0}
 		/>
+		<input
+			type="hidden"
+			name="utilityCurrentPrice"
+			value={utilityPrice.length > 0 ? utilityPrice[0].currentPrice : 0}
+		/>
+		<input type="hidden" name="fuelAmount" value={fuelAmount} />
 		<button
 			type="submit"
 			class="bg-slate-800 text-white px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
@@ -313,13 +317,13 @@
 							<div class="text-green-600 font-semibold border-2 border-green-600 rounded-md p-2 mb-2">
 								Новата заплата изпреварва инфлацията с {(
 									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
-								).toFixed(2)} лв.
+								).toFixed(2)} лв. (в стара валута)
 							</div>
 						{:else}
 							<div class="text-red-600 font-semibold border-2 border-red-600 rounded-md p-2 mb-2">
 								Новата заплата изостава спрямо инфлацията с {(
-									result.previousSalaryValueMatchingCurrentPurchasingPower - result.monthlyBudgetThen
-								).toFixed(2)} лв.
+									result.monthlyBudgetThen - result.previousSalaryValueMatchingCurrentPurchasingPower
+								).toFixed(2)} лв. (в стара валута)
 							</div>
 						{/if}
 					</div>

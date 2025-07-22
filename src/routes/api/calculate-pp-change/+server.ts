@@ -31,6 +31,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		values['inflationRate'] = parseFloat(formData.get('inflationRate') as string);
 		values['historicalFuelPrice'] = parseFloat(formData.get('historicalFuelPrice') as string);
 		values['utilityHistoricalPrice'] = parseFloat(formData.get('utilityHistoricalPrice') as string);
+		values['fuelAmount'] = parseFloat(formData.get('fuelAmount') as string);
+		values['utilityCurrentPrice'] = parseFloat(formData.get('utilityCurrentPrice') as string);
+
 		if (isNaN(values['inflationRate'])) {
 			return json({ error: 'Инфлацията не е валидно число' }, { status: 400 });
 		}
@@ -40,6 +43,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (isNaN(values['utilityHistoricalPrice'])) {
 			return json({ error: 'Историческите цени на комуналните услуги не са валидни' }, { status: 400 });
 		}
+		if (isNaN(values['fuelAmount'])) {
+			return json({ error: 'Количеството гориво не е валидно число' }, { status: 400 });
+		}
+		if (isNaN(values['utilityCurrentPrice'])) {
+			return json({ error: 'Текущата цена на комуналните услуги не е валидна' }, { status: 400 });
+		}
 
 		// Destructure values for easier access
 		const {
@@ -47,24 +56,40 @@ export const POST: RequestHandler = async ({ request }) => {
 			monthlyBudgetThen,
 			foodExpense,
 			fuelExpense,
+			fuelAmount,
 			utilityExpense,
 			inflationRate,
 			historicalFuelPrice,
+			utilityCurrentPrice,
 			utilityHistoricalPrice
 		} = values;
 
 		// Calculate purchasing power change
-		// This is a simplified calculation - you can make it more sophisticated
+		// This is a simplified calculation
 		const totalExpensesNow = foodExpense + fuelExpense + utilityExpense;
-		// Calculate total expenses at the start of the period by dividing the current expenses by (1 + inflation rate)
-		const totalExpensesThen = foodExpense / (1 + inflationRate) + historicalFuelPrice + utilityHistoricalPrice;
+
+		// Calculate fuel expense at the start of the period
+		const fuelExpenseThen = historicalFuelPrice * fuelAmount;
+		// Calculate utility expense at the start of the period
+		const utilityExpenseThen = (utilityExpense / utilityCurrentPrice) * utilityHistoricalPrice;
+
+		// Calculate total expenses at the start of the period
+		const totalExpensesThen = foodExpense / (1 + inflationRate) + fuelExpenseThen + utilityExpenseThen;
+
+		// Calculate the combined inflation rate
+		const fuelInflationRate = (fuelExpense - fuelExpenseThen) / fuelExpenseThen;
+		const utilityInflationRate = (utilityExpense - utilityExpenseThen) / utilityExpenseThen;
+		// Return the average of the three inflation rates so that we can use it to calculate the purchasing power change
+		const combinedInflationRate = (inflationRate + fuelInflationRate + utilityInflationRate) / 3;
+
 		// Calculate the remaining budget for each period
 		const currentDisposableIncome = monthlyBudget - totalExpensesNow;
 		const previousDisposableIncome = monthlyBudgetThen - totalExpensesThen;
 
-		// Calculate the net expenses difference on current prices
-		// (the difference between the current expenses and the expenses at the start of the period)
-		const netExpensesDifference = totalExpensesNow - totalExpensesThen;
+		// Calculate the net expenses difference in current prices
+		// Convert historical expenses to current prices using combined inflation rate
+		const totalExpensesThenInCurrentPrices = totalExpensesThen * (1 + combinedInflationRate);
+		const netExpensesDifference = totalExpensesNow - totalExpensesThenInCurrentPrices;
 
 		// Calculate what the previous salary should have been to match current purchasing power
 		// Formula: previousSalary = currentDisposableIncome + previousExpenses
@@ -78,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			totalExpensesThen,
 			currentDisposableIncome,
 			previousDisposableIncome,
-			inflationRate: inflationRate * 100,
+			inflationRate: combinedInflationRate * 100,
 			netExpensesDifference,
 			previousSalaryValueMatchingCurrentPurchasingPower
 		};
